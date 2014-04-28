@@ -2,7 +2,7 @@
     'use strict';
 
     var Core = {
-        allwaysTrue: function () {
+        alwaysTrue: function () {
             return true;
         }
     };
