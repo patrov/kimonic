@@ -27,7 +27,7 @@ Kimo.require = (function(r) {
             "signals": "kimonic/vendor/crossroads/signals.min",
             "hasher": "kimonic/vendor/crossroads/hasher.min",
             "vendor.crossroads.main": "kimonic/vendor/crossroads/crossroads.min",
-            "bootstrapJs": "/opennote/css/bootstrap/js/bootstrap.min",
+            "bootstrapJs": "/kimonic/vendor/bootstrap/css/js/bootstrap.min",
             "Form.image": "kimonic/formfields/image/main"
         },
         shim: {
@@ -46,8 +46,7 @@ if (typeof define === "function" && define.amd && define.amd.jQuery) {
     });
 }
 
-Kimo.requireWithPromise = function() {
-    }
+Kimo.requireWithPromise = function() {}
 
 define("Kimo/core",
     ["require", "jquery",
@@ -69,7 +68,7 @@ define("Kimo/core",
     "signals",
     "hasher",
     "vendor.crossroads.main",
-    "bootstrapJs",
+    //"bootstrapJs",
     //  "Form.image"
     ], function(require, jQuery) {
         Kimo.jquery = jQuery.noConflict(true);

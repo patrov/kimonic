@@ -42,6 +42,11 @@ define(["Kimo.Observable"], function(Observable) {
                 cid = (typeof cid === "string") ? cid : 0;
                 return this.entities[cid];
             },
+            
+            getPath: function(){
+                console.log("where the content can be found");
+                throw "getPath:NotImplementedYet";
+            },
             findById: function(entityId) {
                 var resPromise = null;
                 var entity = this.entities[this.cidSidMap[entityId]];
@@ -209,6 +214,12 @@ define(["Kimo.Observable"], function(Observable) {
             },
             init: function() {
             },
+            
+            getPath: function(){
+                console.log("where the content can't be found");
+                throw "getPath:NotImplementedYet";
+            },
+            
             checkData: function() {
                 console.log("checkData must be implemented for [" + this.name + "] entity");
                 return false;
@@ -222,7 +233,7 @@ define(["Kimo.Observable"], function(Observable) {
             },
             getCid: function() {
                 return this._cid;
-           },
+            },
             /**
              * entity hasChanged
              **/
@@ -289,7 +300,7 @@ define(["Kimo.Observable"], function(Observable) {
                 } else {
                     throw "Key " + key + " doesn't exists in Entity " + this.name;
                 }
-           },
+            },
             "super": function() {
                 var baseApi = {};
                 baseApi.toJson = Kimo.jquery.proxy(AbstractEntity.toJson, this);
@@ -407,5 +418,5 @@ define(["Kimo.Observable"], function(Observable) {
         }
     })(jQuery, window);
     Kimo.ModelManager = ModelManager;
-return ModelManager;
+    return ModelManager;
 });

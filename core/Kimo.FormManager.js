@@ -2,7 +2,7 @@
  * DataWrapper
  */
 
-define(["Kimo.Observable","Kimo.Utils"], function(Observable,Utils) {
+define(["Kimo.DbManager","Kimo.Observable","Kimo.Utils"], function(DbManager,Observable,Utils) {
     
     var DataWrapper = function(data) {
 
