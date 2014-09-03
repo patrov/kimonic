@@ -107,12 +107,7 @@ define(["Kimo.Utils","Kimo.ModelManager","Kimo.ModelAdapter"], function(Utils,Ki
             var repositoryInstance = Kimo.ModelManager.getRepository(repositoryName);
             var repository = repositoryName.replace(/repository/gi, "");
             options = options || {};
-            var params = {
-                model: repository,
-                criteria: options
-            }
-            
-            return makeRestRequest(repositoryInstance.getPath()+"/findAll", {
+            return makeRestRequest(repositoryInstance.getPath()+"/findAll/"+repository, {
                 type:"GET"
             });
            

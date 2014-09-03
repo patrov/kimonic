@@ -86,15 +86,20 @@ define(["Kimo.Observable"], function(Observable) {
              * 
              **/
             getAll: function(options) {
-                var results = _adapter.findAll(this.getName(), options);
-                var container = [];
-                if (results) {
-                    for (var resultKey in results) {
-                        var data = this.create(results[resultKey], false, false);
-                        container.push($.extend(true, {}, data));
+                var def = new $.Deferred();
+                var self = this;
+                 _adapter.findAll(this.getName(), options).done(function(response){
+                    var container = [];
+                    var results = response.result; 
+                    if (results) {
+                        for (var resultKey in results) {
+                            var data = self.create(results[resultKey], false, false);
+                            container.push($.extend(true, {}, data));
+                        }
                     }
-                }
-                return container;
+                    def.resolve(container);
+                })
+                return def.promise();
             },
             _registerNewModel: function(modelData) {
                 var data = new this.model(modelData);
