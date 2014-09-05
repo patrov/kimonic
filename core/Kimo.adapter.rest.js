@@ -2,9 +2,7 @@ define(["Kimo.Utils","Kimo.ModelManager","Kimo.ModelAdapter"], function(Utils,Ki
     var makeRestRequest = Utils.makeRestRequest;
     var restAdapter = {
         settings: {
-            availableActions: ["create", "read", "update", "remove"],
-            ws: "ws_data",
-            path: {}
+            availableActions: ["create", "read", "update", "remove"]
         },
         invoke: function(action, model, repository, callbacks, params) {
             if (this.settings.availableActions[action] == "undefined")
@@ -71,10 +69,8 @@ define(["Kimo.Utils","Kimo.ModelManager","Kimo.ModelAdapter"], function(Utils,Ki
             var promise = null;
             if (!model.isNew()) {
                 promise = makeRestRequest(model.getPath()+"/update", {
-                    params: {
-                        data: model.toJson(true)
-                    },
-                    method: "POST",
+                    data :{ data : JSON.stringify(model.toJson(true)) },
+                    type: "POST",
                     success: function(response) {
                         if (typeof callbacks.success == "function") {
                             callbacks.success(response.result);

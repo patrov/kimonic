@@ -205,7 +205,6 @@ define(["jquery","Kimo.Observable"],function(jquery,Observable){
         
         data = $.isArray(data) ? data : [data];
         var container = document.createDocumentFragment();
-        
         for (var item in data) {
             var itemData = data[item];
             item = this.itemRenderer.call(this, itemData);

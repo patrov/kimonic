@@ -43,33 +43,24 @@ define([], function() {
             return dfd.promise();
         },
         
-        makeRestRequest :function(url,data) {
+        makeRestRequest :function(url,params) {
             var dfd = new $.Deferred();
-            var params = {
-                params: data.params
-            };
-
             var successCallback = function(response) {
-                if (typeof data.success == "function") {
-                    data.success(response);
+                if (typeof params.success == "function") {
+                    params.success(response);
                     dfd.resolve(response);
                 } else {
                     dfd.resolve(response);
                 }
             }
-
             var errorCallback = function(reason) {
                 dfd.reject(reason);
             }
-            
-            $.ajax({
-                url: url,
-                //data: JSON.stringify(params),
-                type: data.type||"GET",
-                async: (typeof data.async == "boolean") ? data.async : true,
-                success: successCallback,
-                error: errorCallback
-            });
+           var defParams = {async:true, url:url, type:"GET", success:successCallback, error:errorCallback};
+           defParams = $.extend(true,defParams,params); 
+           console.log(defParams);
+           /*remove data*/
+            $.ajax(defParams);
             return dfd.promise();
         }
     }
