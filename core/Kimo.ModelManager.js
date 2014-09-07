@@ -44,9 +44,9 @@ define(["Kimo.Observable"], function(Observable) {
             },
             
             getPath: function(){
-                console.log("where the content can be found");
                 throw "getPath:NotImplementedYet";
             },
+            
             findById: function(entityId) {
                 var resPromise = null;
                 var entity = this.entities[this.cidSidMap[entityId]];
