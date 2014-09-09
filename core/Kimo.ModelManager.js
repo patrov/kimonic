@@ -44,9 +44,9 @@ define(["Kimo.Observable"], function(Observable) {
             },
             
             getPath: function(){
-                console.log("where the content can be found");
                 throw "getPath:NotImplementedYet";
             },
+            
             findById: function(entityId) {
                 var resPromise = null;
                 var entity = this.entities[this.cidSidMap[entityId]];
@@ -221,8 +221,7 @@ define(["Kimo.Observable"], function(Observable) {
             },
             
             getPath: function(){
-                console.log("where the content can't be found");
-                throw "getPath:NotImplementedYet";
+                throw "getPathMethod:NotImplementedYet";
             },
             
             checkData: function() {
@@ -312,7 +311,7 @@ define(["Kimo.Observable"], function(Observable) {
                 return baseApi;
             },
             toJson: function() {
-                /*recursif toJson */
+                /*recursive toJson */
                 var json = $.extend(true, {}, this._settings);
                 json["__entity__"] = this.name;
                 /*handle uid*/

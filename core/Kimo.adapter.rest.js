@@ -22,12 +22,12 @@ define(["Kimo.Utils","Kimo.ModelManager","Kimo.ModelAdapter"], function(Utils,Ki
             
             var data = {
                 model: model.name,
-                data: model.toJson(true)
+                data: JSON.stringify(model.toJson(true))
             };
             
-            return makeRestRequest(model.getPath()+ "/create", {
-                params: data,
-                type: "PUT",
+            return makeRestRequest(model.getPath(), {
+                data: data,
+                type: "POST",
                 success: function(response) {
                     model.setUid(response.result.uid);
                     if (typeof callbacks.success == "function") {
@@ -49,8 +49,7 @@ define(["Kimo.Utils","Kimo.ModelManager","Kimo.ModelAdapter"], function(Utils,Ki
                     data: model.toJson(true)
                 };
 
-                return makeRestRequest(model.getPath() + "/delete", {
-                    params: data,
+                return makeRestRequest(model.getPath() + "/"+parseInt(model.getUid()), {
                     type: "DELETE",
                     success: function(response) {
                         if (typeof callbacks.success == "function") {
@@ -68,9 +67,9 @@ define(["Kimo.Utils","Kimo.ModelManager","Kimo.ModelAdapter"], function(Utils,Ki
         update: function(model, repository, callbacks) {
             var promise = null;
             if (!model.isNew()) {
-                promise = makeRestRequest(model.getPath()+"/update", {
+                promise = makeRestRequest(model.getPath(), {
                     data :{ data : JSON.stringify(model.toJson(true)) },
-                    type: "POST",
+                    type: "PUT",
                     success: function(response) {
                         if (typeof callbacks.success == "function") {
                             callbacks.success(response.result);
@@ -92,7 +91,7 @@ define(["Kimo.Utils","Kimo.ModelManager","Kimo.ModelAdapter"], function(Utils,Ki
         find: function(repositoryName, id) {
             var repositoryInstance = Kimo.ModelManager.getRepository(repositoryName);
             var repository = repositoryName.replace(/repository/gi, "");
-            return makeRestRequest(repositoryInstance.getPath()+"/find/"+id, {
+            return makeRestRequest(repositoryInstance.getPath()+"/"+id, {
                 params: {
                     type:"GET"
                 }
