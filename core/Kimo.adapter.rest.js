@@ -9,8 +9,7 @@ define(["Kimo.Utils","Kimo.ModelManager","Kimo.ModelAdapter"], function(Utils,Ki
                 return false;
             if (typeof repository != "string")
                 return false;
-            var promise = this[action].call(this, model, repository, callbacks, params);
-            return promise;
+            return this[action].call(this, model, repository, callbacks, params);
         },
         
         invokeRest : function(action,model,repository,callbacks,params){

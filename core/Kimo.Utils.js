@@ -44,24 +44,9 @@ define([], function() {
         },
         
         makeRestRequest :function(url,params) {
-            var dfd = new $.Deferred();
-            var successCallback = function(response) {
-                if (typeof params.success == "function") {
-                    params.success(response);
-                    dfd.resolve(response);
-                } else {
-                    dfd.resolve(response);
-                }
-            }
-            var errorCallback = function(reason) {
-                dfd.reject(reason);
-            }
-           var defParams = {async:true, url:url, type:"GET", success:successCallback, error:errorCallback};
-           defParams = $.extend(true,defParams,params); 
-           console.log(defParams);
-           /*remove data*/
-            $.ajax(defParams);
-            return dfd.promise();
+           var defaultParams = {async:true, url:url, type:"GET"};
+           defaultParams = $.extend(true,defaultParams,params); 
+           return $.ajax(defaultParams);
         }
     }
     Kimo.Utils = Utils;

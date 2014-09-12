@@ -27,8 +27,8 @@ Kimo.require = (function(r) {
             "signals": "kimonic/vendor/crossroads/signals.min",
             "hasher": "kimonic/vendor/crossroads/hasher.min",
             "vendor.crossroads.main": "kimonic/vendor/crossroads/crossroads.min",
-            "bootstrapJs": "/kimonic/vendor/bootstrap/css/js/bootstrap.min",
-            "Form.image": "kimonic/formfields/image/main"
+            "bootstrapJs": "kimonic/vendor/bootstrap/css/js/bootstrap.min",
+            "vendor.dropzone": "kimonic/vendor/dropzone/dropzone.amd.module.min"
         },
         shim: {
             'Kimo': {
