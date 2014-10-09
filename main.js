@@ -6,7 +6,7 @@
 var Kimo = Kimo || {};
 Kimo.require = (function(r) {
     r.config({
-        baseUrl: "js/",
+        baseUrl: appPath+"js/",
         catchError:true,
         paths: {
             "Kimo.ActivityManager": "kimonic/core/Kimo.ActivityManager",
@@ -27,8 +27,9 @@ Kimo.require = (function(r) {
             "signals": "kimonic/vendor/crossroads/signals.min",
             "hasher": "kimonic/vendor/crossroads/hasher.min",
             "vendor.crossroads.main": "kimonic/vendor/crossroads/crossroads.min",
-            "bootstrapJs": "kimonic/vendor/bootstrap/css/js/bootstrap.min",
-            "vendor.dropzone": "kimonic/vendor/dropzone/dropzone.amd.module.min"
+            "bootstrapJs": "kimonic/vendor/bootstrap/bootstrap.min",
+            "vendor.dropzone": "kimonic/vendor/dropzone/dropzone",
+            "text": "libs/text"
         },
         shim: {
             'Kimo': {
@@ -45,8 +46,6 @@ if (typeof define === "function" && define.amd && define.amd.jQuery) {
         return jQuery;
     });
 }
-
-Kimo.requireWithPromise = function() {}
 
 define("Kimo/core",
     ["require", "jquery",
@@ -68,7 +67,8 @@ define("Kimo/core",
     "signals",
     "hasher",
     "vendor.crossroads.main",
-    //"bootstrapJs",
+    "vendor.dropzone",
+    "bootstrapJs",
     //  "Form.image"
     ], function(require, jQuery) {
         Kimo.jquery = jQuery.noConflict(true);
