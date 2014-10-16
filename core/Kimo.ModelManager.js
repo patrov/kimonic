@@ -1,10 +1,10 @@
-/* 
+/*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-define(["Kimo.Observable"], function(Observable) {
-    
-    var ModelManager = (function($, window) {
+define(["Kimo.Observable","jquery"], function(Observable, jQuery) {
+
+    var ModelManager = (function($) {
         this._init = function() {
         }
         var _repositoriesCtn = {};//Keep Repository's reference
@@ -42,11 +42,11 @@ define(["Kimo.Observable"], function(Observable) {
                 cid = (typeof cid === "string") ? cid : 0;
                 return this.entities[cid];
             },
-            
+
             getPath: function(){
                 throw "getPath:NotImplementedYet";
             },
-            
+
             findById: function(entityId) {
                 var resPromise = null;
                 var entity = this.entities[this.cidSidMap[entityId]];
@@ -83,14 +83,14 @@ define(["Kimo.Observable"], function(Observable) {
              *populate contents
              *n'ajouter que les entités qui diffèrent
              * isSync = false
-             * 
+             *
              **/
             getAll: function(options) {
                 var def = new $.Deferred();
                 var self = this;
                  _adapter.findAll(this.getName(), options).done(function(response){
                     var container = [];
-                    var results = response.result; 
+                    var results = response.result;
                     if (results) {
                         for (var resultKey in results) {
                             var data = self.create(results[resultKey], false, false);
@@ -166,7 +166,7 @@ define(["Kimo.Observable"], function(Observable) {
                     content._reftoRepository = this;
                 }
                 if (triggerEvent) {
-                    this.trigger("change", changeReason, content);  //add event type 
+                    this.trigger("change", changeReason, content);  //add event type
                 }
                 if (persist) {
                     return _adapter.invoke(changeReason, content, this.getName(), {}); //handle callbacks here
@@ -219,11 +219,11 @@ define(["Kimo.Observable"], function(Observable) {
             },
             init: function() {
             },
-            
+
             getPath: function(){
                 throw "getPathMethod:NotImplementedYet";
             },
-            
+
             checkData: function() {
                 console.log("checkData must be implemented for [" + this.name + "] entity");
                 return false;
