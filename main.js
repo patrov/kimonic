@@ -24,10 +24,11 @@ Kimo.require = (function(r) {
             "Kimo.ParamsContainer": "kimonic/core/Kimo.ParamsContainer",
             "Kimo.Utils": "kimonic/core/Kimo.Utils",
             "Kimo.ViewStack": "kimonic/core/Kimo.ViewStack",
-            "signals": "kimonic/vendor/crossroads/signals.min",
-            "hasher": "kimonic/vendor/crossroads/hasher.min",
-            "vendor.crossroads.main": "kimonic/vendor/crossroads/crossroads.min",
-            "bootstrapJs": "/kimonic/vendor/bootstrap/css/js/bootstrap.min",
+          
+            "signals": "kimonic/vendor/signals/dist/signals.min",
+            "hasher": "kimonic/vendor/hasher/dist/js/hasher.min",
+            "vendor.crossroads.main": "kimonic/vendor/crossroads/dist/crossroads.min",
+            "bootstrapJs": "/kimonic/vendor/bootstrap/dist/js/bootstrap.min",
             "Form.image": "kimonic/formfields/image/main"
         },
         shim: {
