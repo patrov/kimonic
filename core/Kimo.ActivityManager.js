@@ -1,5 +1,5 @@
-define([], function() {
-    
+define(["jquery"], function(jQuery) {
+
     var ActivityManager = (function(c, b) {
         var g = []; //activities container
         var h = {};
@@ -215,7 +215,7 @@ define([], function() {
             }
 
         };
-        
+
         var _count = function(){
             return g.length;
         }
