@@ -24,12 +24,14 @@ Kimo.require = (function(r) {
             "Kimo.ParamsContainer": "kimonic/core/Kimo.ParamsContainer",
             "Kimo.Utils": "kimonic/core/Kimo.Utils",
             "Kimo.ViewStack": "kimonic/core/Kimo.ViewStack",
-            "signals": "kimonic/vendor/crossroads/signals.min",
-            "hasher": "kimonic/vendor/crossroads/hasher.min",
-            "vendor.crossroads.main": "kimonic/vendor/crossroads/crossroads.min",
-            "bootstrapJs": "kimonic/vendor/bootstrap/bootstrap.min",
-            "vendor.dropzone": "kimonic/vendor/dropzone/dropzone",
-            "text": "libs/text"
+
+            "jquery": "kimonic/vendor/jquery/dist/jquery.min",
+            "signals": "kimonic/vendor/signals/dist/signals.min",
+            "hasher": "kimonic/vendor/hasher/dist/js/hasher.min",
+            "vendor.crossroads.main": "kimonic/vendor/crossroads/dist/crossroads.min",
+            "text": "kimonic/vendor/requirejs-text/text",
+            //"bootstrapJs": "/kimonic/vendor/bootstrap/dist/js/bootstrap.min",
+            "Form.image": "kimonic/formfields/image/main"
         },
         shim: {
             'Kimo': {
@@ -41,11 +43,6 @@ Kimo.require = (function(r) {
     return r;
 })(require);
 
-if (typeof define === "function" && define.amd && define.amd.jQuery) {
-    define("jquery", [], function() {
-        return jQuery;
-    });
-}
 
 define("Kimo/core",
     ["require", "jquery",

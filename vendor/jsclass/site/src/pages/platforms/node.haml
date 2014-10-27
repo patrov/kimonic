@@ -1,0 +1,26 @@
+:textile
+  h2. Installing with @npm@
+
+  If you want to use @jsclass@ with Node, there's an npm pacakge you can
+  install:
+
+  <pre class="cmd">$ npm install jsclass</pre>
+
+  After installing this package, you can either use the
+  "@JS.require()@":/packages.html API to load components, or use the standard
+  @require()@ function.
+
+  <pre>// Using JS.require()
+
+  var JS = require('jsclass');
+
+  JS.require('JS.Set', function(Set) {
+      var s = new Set([1,2,3]);
+      // ...
+  });
+
+
+  // Using require()
+
+  var Set = require('jsclass/src/set');
+  var s = new Set([1,2,3]);</pre>
