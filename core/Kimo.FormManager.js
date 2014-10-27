@@ -65,7 +65,7 @@ define(["Kimo.DbManager","Kimo.Observable","Kimo.Utils","vendor.dropzone"], func
             this.hasDynform = false;
             this.dynformHandlers = {}; //keep track of handlers
             this.validator = _defaultValidator;
-            this.init(config);
+            this.init($.extend(true,{},config));
         }
         /* force the use of the validator */
 
@@ -118,6 +118,7 @@ define(["Kimo.DbManager","Kimo.Observable","Kimo.Utils","vendor.dropzone"], func
                     this.items[key] = new _formFields[fieldType](fieldsConfig);
                     /* field has a ref the the form that contents the field*/
                     /*bind change here*/
+                    console.log("", fieldsConfig.value);
                     var field = this.items[key];
                     var callback = (function(key) {
                         return function(value) {
@@ -492,7 +493,7 @@ define(["Kimo.DbManager","Kimo.Observable","Kimo.Utils","vendor.dropzone"], func
         FormBuilder.prototype.setData = function(data) {
             data = data || {};
             this.data = new DataWrapper(data);
-        //_bindFields.call(this, this.fieldsMap);
+            _bindFields.call(this, this.fieldsMap);
         }
 
         FormBuilder.prototype.getField = function(fieldname) {
@@ -509,6 +510,7 @@ define(["Kimo.DbManager","Kimo.Observable","Kimo.Utils","vendor.dropzone"], func
 
         FormBuilder.prototype.reset = function() {
             this.data = null;
+        /* call reset everywhereS*/
         }
 
         /* generic error handler */
@@ -709,9 +711,11 @@ define(["Kimo.DbManager","Kimo.Observable","Kimo.Utils","vendor.dropzone"], func
                 new Error("createForm: name must be a string");
             return _formConfig[name];
         }
-        var _getInstance = function(name) {
+        var _getInstance = function(name, newInstance) {
             
-            if(name in _formConfig){
+            newInstance = (typeof newInstance =="boolean") ? newInstance : false;
+          
+            if(_formConfig.hasOwnProperty('name') && !newInstance){
                 return _formConfig[name];
             }
             
@@ -720,7 +724,6 @@ define(["Kimo.DbManager","Kimo.Observable","Kimo.Utils","vendor.dropzone"], func
                 _formConfig[name] = form;
                 return form;
             }
-            return false;
         }
         var publicApi = {
             getInstance: function() {
@@ -1116,11 +1119,11 @@ define(["Kimo.DbManager","Kimo.Observable","Kimo.Utils","vendor.dropzone"], func
         
         /* explicit init */
         init: function() {
-            this.field = $("<p><label class='field-title'>This is</label><input class=\"mainField input-block-level\" type=\"text\"/></p>").clone();
+            this.field = $("<p><label class='field-title'></label><input class=\"mainField input-block-level\" type=\"text\"/></p>").clone();
             $(this.field).attr("data-field-id",this.id);
             $(this.field).find(".field-title").text(this._settings.label);
             if ("placeholder" in this._settings && typeof this._settings.placeholder == "string") {
-                $(this.field).find("input").attr("placeholder", this._settings.placeholder);
+                $(this.field).find("input").attr("placeholder", this._settings.placeholder).val("toto");
             }
             this.field.find("input").attr("id","field_"+this.id);
             this._bindEvents();
@@ -1142,9 +1145,10 @@ define(["Kimo.DbManager","Kimo.Observable","Kimo.Utils","vendor.dropzone"], func
         },
         populate: function() {
             var fieldName = (this._settings.entityName) ? "data-fieldname-" + this._settings.entityName : "data-fieldname";
-            $(this.field).find("input").eq(0)
+            $(this.field).find("#field_"+this.id).eq(0)
             .attr("name", this._fieldName)
-            .attr(fieldName, this._settings.fieldName).val(this._settings.value);
+            .attr(fieldName, this._settings.fieldName)
+            .attr("value",this._settings.value);
         },
         render: function() {
             return this.field;
@@ -1486,7 +1490,6 @@ define(["Kimo.DbManager","Kimo.Observable","Kimo.Utils","vendor.dropzone"], func
             var formChooser = (typeof this._settings.chooserRenderer == "function") ? this._settings.chooserRenderer : false;
             this.formList = formChooser();
             this.beforeSubFormRender = (typeof this._settings.beforeSubFormRender == "function") ? this._settings.beforeSubFormRender : null;
-            console.log(this.beforeSubFormRender.toSource());
             this.onDeleteSubForm = (typeof this._settings.onDeleteSubform == "function") ? this._settings.onDeleteSubform : null;
             this.addBtn = $(this.field).find(".add-btn").eq(0);
             this.useJsonData = (typeof this._settings.useJsonData == "boolean") ? this._settings.useJsonData : false;
@@ -1545,15 +1548,14 @@ define(["Kimo.DbManager","Kimo.Observable","Kimo.Utils","vendor.dropzone"], func
             }
 
         },
-        _addNewForm: function(formType, data) {
+        _addNewForm: function(formType, data) { 
             if (typeof formType != "string")
                 return;
             data = (data) ? data : {};
-            var form = FormManager.getFormInstance(formType);
+            var form = FormManager.getFormInstance(formType, true);
             if (typeof this.beforeSubFormRender == "function") {
                 this.beforeSubFormRender(form, data);
             } else {
-                alert("this");
                 form.setData(data); //strange
             }
             var formRender = form.render();
@@ -1571,7 +1573,6 @@ define(["Kimo.DbManager","Kimo.Observable","Kimo.Utils","vendor.dropzone"], func
         getValue: function(raw) {
             raw = raw || false;
             var value = {};
-            var self = this;
             $.each(this.formsContainer, function(i, form) {
                 value[i] = {};
                 value[i].type = form.name;
@@ -1583,6 +1584,7 @@ define(["Kimo.DbManager","Kimo.Observable","Kimo.Utils","vendor.dropzone"], func
         populate: function() {
             this.formCpt = 0;
             var formValue = this._settings.value;
+            console.log(formValue);
             var self = this;
             $.each(formValue, function(key, formData) {
                 /* test type && data */
