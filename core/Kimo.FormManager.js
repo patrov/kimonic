@@ -2,7 +2,7 @@
  * DataWrapper
  */
 
-define(["Kimo.DbManager","Kimo.Observable","Kimo.Utils"], function(DbManager,Observable,Utils) {
+define(["Kimo.DbManager","Kimo.Observable","Kimo.Utils","vendor.dropzone"], function(DbManager,Observable,Utils,Dropzone ) {
     
     var DataWrapper = function(data) {
 
@@ -65,7 +65,7 @@ define(["Kimo.DbManager","Kimo.Observable","Kimo.Utils"], function(DbManager,Obs
             this.hasDynform = false;
             this.dynformHandlers = {}; //keep track of handlers
             this.validator = _defaultValidator;
-            this.init(config);
+            this.init($.extend(true,{},config));
         }
         /* force the use of the validator */
 
@@ -103,7 +103,7 @@ define(["Kimo.DbManager","Kimo.Observable","Kimo.Utils"], function(DbManager,Obs
                     subform.container = this;
                     subform.setData(this.data.get(key));
                     this.hasSubforms = true;
-                    /*handle change on subform and keep map infos*/
+                /*handle change on subform and keep map infos*/
                 }
 
                 else if (fieldType == "dynform") {
@@ -114,11 +114,11 @@ define(["Kimo.DbManager","Kimo.Observable","Kimo.Utils"], function(DbManager,Obs
                         console.warn("[form:" + this.name + "], [key: " + key + "] " + fieldType + " type can't be found.");
                     fieldsConfig.value = (this.data && this.data.get(key)) ? this.data.get(key) : "";
                     fieldsConfig.name = key;
-
+                    fieldsConfig.mainForm = this;
                     this.items[key] = new _formFields[fieldType](fieldsConfig);
                     /* field has a ref the the form that contents the field*/
-                    this.items[key].mainform = this;
                     /*bind change here*/
+                    console.log("", fieldsConfig.value);
                     var field = this.items[key];
                     var callback = (function(key) {
                         return function(value) {
@@ -280,6 +280,7 @@ define(["Kimo.DbManager","Kimo.Observable","Kimo.Utils"], function(DbManager,Obs
         FormBuilder.prototype.submit = function() {
             var data = this.getData(true);
             if (this.validator(data)) {
+
                 var event = {
                     type: "submit",
                     data: {
@@ -290,10 +291,12 @@ define(["Kimo.DbManager","Kimo.Observable","Kimo.Utils"], function(DbManager,Obs
                 this.trigger("submit", event);
             }
         },
-                FormBuilder.prototype.validate = function() {
-                    var data = this.getData(true);
-                    this.validator(data);
-                }
+        
+        FormBuilder.prototype.validate = function() {
+            var data = this.getData(true);
+            return this.validator(data);
+        }
+        
         /** add dynamically a new field to the form */
         FormBuilder.prototype.appendField = function(fieldsConfig, register) {
             var fieldType = fieldsConfig.type;
@@ -338,7 +341,9 @@ define(["Kimo.DbManager","Kimo.Observable","Kimo.Utils"], function(DbManager,Obs
             var self = this;
             var mixin = $.extend(true, {}, Observable);
             $.extend(this, mixin);
-            this._registerEvents(["submit", "cancel", "error", "mouseIn", "mouseOut"]);
+            this.mainWrapper = (typeof config.mainWrapper=="string") ? $(config.mainWrapper) : $("<form>");
+            
+            this._registerEvents(["submit", "cancel", "error", "mouseIn", "mouseOut","beforeRender"]);
             this.fieldsMap = config.map;
 
             /* handle plugins fields plugin here */
@@ -369,6 +374,11 @@ define(["Kimo.DbManager","Kimo.Observable","Kimo.Utils"], function(DbManager,Obs
                     this.setValidator(config.validator);
                 }
             }
+            if("beforeRender" in config){
+                if(typeof config["beforeRender"]=="function"){
+                    this.beforeRender = config.beforeRender;
+                }
+            }
         }
 
         /**
@@ -377,7 +387,9 @@ define(["Kimo.DbManager","Kimo.Observable","Kimo.Utils"], function(DbManager,Obs
          */
         FormBuilder.prototype.render = function(container) {
             container = container || null;
+            
             var renders = document.createDocumentFragment();
+            var fieldRenderMap = {};
             /*handler before render : form and fields*/
             var self = this;
             $(renders).bind("mouseenter", function() {
@@ -389,7 +401,6 @@ define(["Kimo.DbManager","Kimo.Observable","Kimo.Utils"], function(DbManager,Obs
             });
 
             var dynformHandler = _dynformHandler;
-            //console.log(_dynFormHandler.toString());
             $.each(this.items, function(key, item) {
                 var itemRender = item.render();
                 if (typeof item.afterRender == "function") {
@@ -405,19 +416,31 @@ define(["Kimo.DbManager","Kimo.Observable","Kimo.Utils"], function(DbManager,Obs
                     field: item,
                     itemRender: itemRender
                 });
-
+                fieldRenderMap[key] = $(itemRender);
                 renders.appendChild($(itemRender).get(0));
             });
 
-            /* handle subform  handle events too before */
+            /* handle subform events too before */
             $.each(this.subforms, function(i, subform) {
                 renders.appendChild(subform.render());
             });
-
-            /* buttons */
+            
+            /* FormRender event allows us to update the render --> if so  the render object should be global */
+            FormManager.EventHub.trigger("beforeRender",{
+                form: self,
+                renders: renders
+            })
+            
             if (this.buttons) {
                 renders.appendChild(this.buttons.get(0));
-            }
+            }           
+            
+            if(typeof this.beforeRender=="function"){
+                renders =  this.beforeRender(fieldRenderMap,renders).get(0);
+            } 
+            
+            renders = this.mainWrapper.append($(renders));
+            
             if (container) {
                 $(container).append(renders);
                 renders = container;
@@ -487,6 +510,7 @@ define(["Kimo.DbManager","Kimo.Observable","Kimo.Utils"], function(DbManager,Obs
 
         FormBuilder.prototype.reset = function() {
             this.data = null;
+        /* call reset everywhereS*/
         }
 
         /* generic error handler */
@@ -520,6 +544,7 @@ define(["Kimo.DbManager","Kimo.Observable","Kimo.Utils"], function(DbManager,Obs
                 this._oldValue = false;
                 this.events = ($.isArray(this.events)) ? this.events : [];
                 this._value = this._settings.value;
+                this.mainFormWrapper = this._settings.mainForm.mainWrapper;
                 var events = $.merge(this.events, ["valueChanged", "beforeRender", "afterRender"]);
                 this._registerEvents(events); //more to come
                 this.init();
@@ -548,12 +573,19 @@ define(["Kimo.DbManager","Kimo.Observable","Kimo.Utils"], function(DbManager,Obs
             getSettings: function() {
                 return this._settings;
             },
+            
             getFieldName: function() {
                 return this._settings.name;
             },
-            getMainForm: function() {
-                return this.mainform;
+            
+            getMainWrapper : function(){
+                return this.mainFormWrapper;
             },
+            
+            getMainForm: function() {
+                return this._settings.mainform;
+            },
+            
             getLabelField: function() {
                 console.warn({
                     error: "getLabelField not implemented in form:" + this.getMainForm().name + " for field: " + this.getFieldName()
@@ -575,7 +607,6 @@ define(["Kimo.DbManager","Kimo.Observable","Kimo.Utils"], function(DbManager,Obs
              * When setValue is called a change event must be triggered
              * try to trigger error
              * prevent recursive trigger
-             *  check it
              **/
             setValue: function(value) {
                 var newvalue = value || false;
@@ -667,8 +698,9 @@ define(["Kimo.DbManager","Kimo.Observable","Kimo.Utils"], function(DbManager,Obs
         var _createForm = function(name, mapConfig) {
             if (typeof name !== "string")
                 new Error("createForm: name must be a string");
-            if (_formConfig[name] !== "undefined")
-                new Error("createForm: a form named '" + name + "' already exists");
+            if (typeof _formConfig[name] != "undefined"){
+                return _formConfig[name];
+            }
             _formConfig[name] = new FormBuilder(name, mapConfig);
             _defMap[name] = mapConfig;
             return _formConfig[name];
@@ -679,12 +711,19 @@ define(["Kimo.DbManager","Kimo.Observable","Kimo.Utils"], function(DbManager,Obs
                 new Error("createForm: name must be a string");
             return _formConfig[name];
         }
-        var _getInstance = function(name) {
+        var _getInstance = function(name, newInstance) {
+            
+            newInstance = (typeof newInstance =="boolean") ? newInstance : false;
+          
+            if(_formConfig.hasOwnProperty('name') && !newInstance){
+                return _formConfig[name];
+            }
+            
             if (name in _defMap) {
                 var form = new FormBuilder(name, _defMap[name]);
+                _formConfig[name] = form;
                 return form;
             }
-            return false;
         }
         var publicApi = {
             getInstance: function() {
@@ -751,7 +790,7 @@ define(["Kimo.DbManager","Kimo.Observable","Kimo.Utils"], function(DbManager,Obs
                 },
                 /* Do what to plugins should do here */
                 apply: function() {
-                    $(this.field).css("border", "1px solid blue");
+                // $(this.field).css("border", "1px solid blue");
                 },
                 setForm: function(form) {
                     this.form = form;
@@ -1077,20 +1116,22 @@ define(["Kimo.DbManager","Kimo.Observable","Kimo.Utils"], function(DbManager,Obs
             label: "###your_label###",
             placeholder: ""
         },
-        /*events change, validity change, dirtychange -->from extjs*/
-        /* init value : initValue, isDirty, reset, handle events */
-        /*main concern how to handle form change*/
-        /*explicit init*/
+        
+        /* explicit init */
         init: function() {
-            this.field = $("<p><label class='field-title'>This is</label><input class=\"mainField input-block-level\" type=\"text\"/></p>").clone();
+            this.field = $("<p><label class='field-title'></label><input class=\"mainField input-block-level\" type=\"text\"/></p>").clone();
+            $(this.field).attr("data-field-id",this.id);
             $(this.field).find(".field-title").text(this._settings.label);
             if ("placeholder" in this._settings && typeof this._settings.placeholder == "string") {
-                $(this.field).find("input").attr("placeholder", this._settings.placeholder);
+                $(this.field).find("input").attr("placeholder", this._settings.placeholder).val("toto");
             }
+            this.field.find("input").attr("id","field_"+this.id);
             this._bindEvents();
         },
+        
         _bindEvents: function() {
-            this.field.delegate("input", "blur", $.proxy(this._handleChange, this));
+            $(this.mainFormWrapper).delegate("#field_"+this.id,"blur",$.proxy(this._handleChange,this));
+        //$(this.mainFormWrapper)           
         },
         getMainField: function() {
             return this.field.find("input").eq(0);
@@ -1099,14 +1140,15 @@ define(["Kimo.DbManager","Kimo.Observable","Kimo.Utils"], function(DbManager,Obs
             return this.field.find("label.field-title").eq(0);
         },
         _handleChange: function(e) {
-            var value = $(e.target).val();
+            var value = $(e.currentTarget).val();
             this.setValue(value);
         },
         populate: function() {
             var fieldName = (this._settings.entityName) ? "data-fieldname-" + this._settings.entityName : "data-fieldname";
-            $(this.field).find("input").eq(0)
-                    .attr("name", this._fieldName)
-                    .attr(fieldName, this._settings.fieldName).val(this._settings.value);
+            $(this.field).find("#field_"+this.id).eq(0)
+            .attr("name", this._fieldName)
+            .attr(fieldName, this._settings.fieldName)
+            .attr("value",this._settings.value);
         },
         render: function() {
             return this.field;
@@ -1115,7 +1157,10 @@ define(["Kimo.DbManager","Kimo.Observable","Kimo.Utils"], function(DbManager,Obs
             return true;
         }
     });
-FormManager.registerField("password", {
+    
+    
+    
+    FormManager.registerField("password", {
         _settings: {
             templateKey: "sqljdh",
             fieldName: "",
@@ -1150,8 +1195,8 @@ FormManager.registerField("password", {
         populate: function() {
             var fieldName = (this._settings.entityName) ? "data-fieldname-" + this._settings.entityName : "data-fieldname";
             $(this.field).find("input").eq(0)
-                    .attr("name", this._fieldName)
-                    .attr(fieldName, this._settings.fieldName).val(this._settings.value);
+            .attr("name", this._fieldName)
+            .attr(fieldName, this._settings.fieldName).val(this._settings.value);
         },
         render: function() {
             return this.field;
@@ -1300,8 +1345,8 @@ FormManager.registerField("password", {
         populate: function() {
             var fieldName = (this._settings.entityName) ? "data-fieldname-" + this._settings.entityName : "data-fieldname";
             $(this.field).find("textarea").eq(0)
-                    .attr("name", this._fieldName)
-                    .attr(fieldName, this._settings.fieldName).val(this._settings.value);
+            .attr("name", this._fieldName)
+            .attr(fieldName, this._settings.fieldName).val(this._settings.value);
         },
         render: function() {
             return this.field;
@@ -1373,7 +1418,7 @@ FormManager.registerField("password", {
             if (selectedRender) {
                 $(selectedRender).addClass("selectedContent");
                 if (this._settings.enableMultipleSelection) {
-                    /*add before*/
+                /*add before*/
                 } else {
                     /*hide input field*/
                     $(this.selectionContainer).html($(selectedRender));
@@ -1444,7 +1489,7 @@ FormManager.registerField("password", {
             this.formCpt = 0;
             var formChooser = (typeof this._settings.chooserRenderer == "function") ? this._settings.chooserRenderer : false;
             this.formList = formChooser();
-            this.beforeSubFormRender = (typeof this._settings.beforeSubFormRender == "function") ? this._settings.beforeSubFormRender : null
+            this.beforeSubFormRender = (typeof this._settings.beforeSubFormRender == "function") ? this._settings.beforeSubFormRender : null;
             this.onDeleteSubForm = (typeof this._settings.onDeleteSubform == "function") ? this._settings.onDeleteSubform : null;
             this.addBtn = $(this.field).find(".add-btn").eq(0);
             this.useJsonData = (typeof this._settings.useJsonData == "boolean") ? this._settings.useJsonData : false;
@@ -1476,7 +1521,6 @@ FormManager.registerField("password", {
             var formName = $(link).attr("data-form");
             if (typeof formName == "string") {
                 this._addNewForm(formName);
-
             }
         },
         _removeFormActions: function(e) {
@@ -1504,16 +1548,15 @@ FormManager.registerField("password", {
             }
 
         },
-        _addNewForm: function(formType, data) {
+        _addNewForm: function(formType, data) { 
             if (typeof formType != "string")
                 return;
             data = (data) ? data : {};
-            var form = FormManager.getFormInstance(formType);
-            form.setData(data);
-            if (this.beforeSubFormRender) {
+            var form = FormManager.getFormInstance(formType, true);
+            if (typeof this.beforeSubFormRender == "function") {
                 this.beforeSubFormRender(form, data);
             } else {
-                form.setData(data);
+                form.setData(data); //strange
             }
             var formRender = form.render();
             var subFormWrapper = $("<div/>").addClass("kimo deletable form-choice-item");
@@ -1530,7 +1573,6 @@ FormManager.registerField("password", {
         getValue: function(raw) {
             raw = raw || false;
             var value = {};
-            var self = this;
             $.each(this.formsContainer, function(i, form) {
                 value[i] = {};
                 value[i].type = form.name;
@@ -1542,6 +1584,7 @@ FormManager.registerField("password", {
         populate: function() {
             this.formCpt = 0;
             var formValue = this._settings.value;
+            console.log(formValue);
             var self = this;
             $.each(formValue, function(key, formData) {
                 /* test type && data */
@@ -1553,62 +1596,71 @@ FormManager.registerField("password", {
         }
     });
 
-    /*créer image*/
+    /*créer un champ image*/
     FormManager.registerField("image", {
         dependencies: [],
         _settings: {
-            pay: "not good décision",
-            hurts: "very deep goal"
+            id: "",
+            uploadPath: ""
         },
+        events: ["progress","error","complete"],
         init: function() {
             this.field = $('<div>'
-                    + '<label class="field-title"></label>'
-                    + ' <div class="contentWrapper">'
-                    + '<form id="upload" class="upload" method="post" action="upload" enctype="multipart/form-data">'
-                    + '<div id="drop">'
-                    + '	Drop Here'
-                    + '	<a>Browse</a>'
-                    + '	<input type="file" name="upl" multiple />'
-                    + '</div>'
-                    + '<ul></ul></form></div>').clone();
+                + ' <label class="field-title"></label>'
+                + ' <div class="contentWrapper">'
+                + ' <form action="" id=""></form>'
+                + ' </div>').clone();
             this.field.find("label.field-title").text(this._settings.label);
-            this.field.find("#upload").attr("action", "jgfhf");
-            this.dropZone = this.field.find("#drop");
-            this.mainForm = this.field.find("#upload");
+            this.field.find("form").attr("id",this._settings.id);
+            this.mainForm = this.field.find("#"+this._settings.id);
+            $(this.mainForm).attr("action",this._settings.config.url); 
+            Dropzone.autoDiscover = false
             this.initFormUpload();
         },
+        
         initFormUpload: function() {
-            $(this.dropZone).css({width: "300px", height: "300px", border: "1px solid red"});
-           /* $(this.mainForm).fileupload({
-                add: function(e, data) {
-                    var response = data.submit();
-                    console.log(response);
+            var self = this;
+            $(this.mainForm).addClass("dropzone");
+            this.dropZone = $(this.mainForm).dropzone({
+                url: this._settings.config.url,
+                paramName : this._settings.config.paramName,
+                maxFiles: 1,
+                init: function(){
+                    this.on("addFile", function(file){
+                        console.log("file",file)
+                    });
+                    this.on("success", function(){
+                        console.log("success")
+                    });
                 },
-                dropZone: this.dropZone,
-                progress: function() {
+                acceptedFiles: "image/*",
+                addRemoveLinks : true,
+                accept: function(file,done){
+                    self.file = file;
+                    done();
                 },
-                fail: function() {
+                success: function(e){
+                    $(".data-dz-name").remove();
+                    $(".dz-filename").remove();
+                    $(".dz-size").remove();
+                    $(".dz-success-mark").remove();
+                    $(".dz-error-mark").remove();
+                    self.trigger("onSuccess");
+                    console.log("this is it",e);
                 }
-            });*/
+            });
+            console.log(this.dropZone);
         },
-        formatFileSize: function(bytes) {
-            if (typeof bytes !== 'number') {
-                return '';
-            }
-            if (bytes >= 1000000000) {
-                return (bytes / 1000000000).toFixed(2) + ' GB';
-            }
-            if (bytes >= 1000000) {
-                return (bytes / 1000000).toFixed(2) + ' MB';
-            }
-            return (bytes / 1000).toFixed(2) + ' KB';
-        },
+        
+        
         getMainField: function() {
             return $(this.field).find(".contentWrapper").eq(0);
         },
+        
         getValue: function() {
-            var result = {};
-            /*Process image ici*/
+            /*renvoie le nom de/des fichiers uploadés*/
+            var files = this.dropZone.getAcceptedFiles(); 
+            console.log(files);
             return result;
         },
         populate: function() {

@@ -6,7 +6,7 @@
 var Kimo = Kimo || {};
 Kimo.require = (function(r) {
     r.config({
-        baseUrl: "js/",
+        baseUrl: appPath+"js/",
         catchError:true,
         paths: {
             "Kimo.ActivityManager": "kimonic/core/Kimo.ActivityManager",
@@ -44,8 +44,6 @@ Kimo.require = (function(r) {
 })(require);
 
 
-Kimo.requireWithPromise = function() {}
-
 define("Kimo/core",
     ["require", "jquery",
     "Kimo.Observable",
@@ -66,7 +64,8 @@ define("Kimo/core",
     "signals",
     "hasher",
     "vendor.crossroads.main",
-    //"bootstrapJs",
+    "vendor.dropzone",
+    "bootstrapJs",
     //  "Form.image"
     ], function(require, jQuery) {
         Kimo.jquery = jQuery.noConflict(true);
