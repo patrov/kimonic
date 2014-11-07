@@ -30,7 +30,8 @@ Kimo.require = (function(r) {
             "hasher": "kimonic/vendor/hasher/dist/js/hasher.min",
             "vendor.crossroads.main": "kimonic/vendor/crossroads/dist/crossroads.min",
             "text": "kimonic/vendor/requirejs-text/text",
-            //"bootstrapJs": "/kimonic/vendor/bootstrap/dist/js/bootstrap.min",
+            "bootstrap": "kimonic/vendor/bootstrap/dist/js/bootstrap.min",
+            "vendor.dropzone":"kimonic/vendor/dropzone/dropzone.amd.module.min",
             "Form.image": "kimonic/formfields/image/main"
         },
         shim: {
@@ -65,7 +66,7 @@ define("Kimo/core",
     "hasher",
     "vendor.crossroads.main",
     "vendor.dropzone",
-    "bootstrapJs",
+    "bootstrap",
     //  "Form.image"
     ], function(require, jQuery) {
         Kimo.jquery = jQuery.noConflict(true);

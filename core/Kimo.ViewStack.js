@@ -1,7 +1,7 @@
 /* view Class */
-/* a view 
+/* a view
  * a view can have a title? oe his title is a part of his content?
- * 
+ *
  * */
 define([], function() {
     var View = function View(userSettings) {
@@ -21,8 +21,10 @@ define([], function() {
         this._init = function() {
             $.extend(true, this._settings, userSettings);
             this.name = (typeof this._settings.name === "string") ? this._settings.name : false;
-            if (!this.name)
+            if (!this.name) {
                 throw "View should have a name";
+            }
+
             this.width = parseInt(this._settings.size.width);
             this.height = parseInt(this._settings.size.height);
             this.create(this._settings.parentSize);
@@ -40,24 +42,25 @@ define([], function() {
             var parentWidth = parseInt(containerSize.width);
             var parentHeight = parseInt(containerSize.height);
 
-            /* revoir cas pourcentage et cas px*/
-
-            var viewWidth = parentWidth * this.width / 100;
-            var viewHeight = this.height * parentHeight / 100;
-
-            var left = (parentWidth - viewWidth) / 2;
-            var top = (parentHeight - viewHeight) / 2;
-
             var root = $("<div/>");
             root.addClass("view");
             root.addClass(this._settings.cls);
             root.attr("data-name", this.name);
-            root.css(this._settings.size);
-            //root.css("background","#ecf0f1");
             root.css("position", "absolute");
+            /* revoir cas pourcentage et cas px*/
+
+            if(!isNaN(parentHeight)){
+                var viewWidth = parentWidth * this.width / 100;
+                var viewHeight = this.height * parentHeight / 100;
+
+                var left = (parentWidth - viewWidth) / 2;
+                var top = (parentHeight - viewHeight) / 2;
+            }
+           // root.css("border","1px solid blue");
+
             root.css("left", left + "px"); /*Important*/
             root.css("top", top + "px"); /*Important*/
-            root.css("overflow", "auto");
+            root.css("overflow", "hide");
             this.view = root;
         }
     };
@@ -79,7 +82,9 @@ define([], function() {
                 resizable: false
             },
             css: {
-                position: "relative"
+                position: "relative",
+                padding: "10px"
+                //border: "1px solid blue"
             }
         }
         this.template = null;
@@ -96,13 +101,20 @@ define([], function() {
                 margin: "auto"
             };
 
+            if(this._settings.hasOwnProperty("size")){
+                var position = this._settings.size.position || "";
+            }
+            if(position=="fullsize"){
+                defaultCss.width = "100%";
+                defaultCss.height = "auto";
+            }
             $(root).css($.extend(true, defaultCss, this._settings.css));
             $(root).addClass("kimo ui viewstack");
             this.template = root;
         }
 
         this._init = function(settings) {
-            var settings = settings || {};
+            settings = settings || {};
             $.extend(true, this._settings, settings);
             this.applyDraggable = (typeof this._settings.draggable == "boolean") ? this._settings.draggable : true;
             this.applyResizable = (typeof this._settings.resizable == "boolean") ? this._settings.draggable : false;
@@ -165,8 +177,8 @@ define([], function() {
     ViewStack.prototype.gotoView = function(viewname, content) {
         this.selectView(viewname, content);
     }
-    
+
     ViewStack.View = View;
-    Kimo.ViewStack = ViewStack; 
+    Kimo.ViewStack = ViewStack;
     return ViewStack;
 });
