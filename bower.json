@@ -1,7 +1,7 @@
 {
     "name": "kimonic",
     "version": "0.1.0",
-    "authors": ["Harris Baptiste <harris.baptiste@gmail.fr>"],
+    "authors": ["Harris Baptiste <harris.baptiste@gmail.com>"],
     "description": "Kimonic js Framework",
     "main": "kimonic/main.js",
     "moduleType": ["amd"],
@@ -19,7 +19,7 @@
         "crossroads": "*",
         "signals": "*",
         "hasher": "*",
-        "cryptojs": "*",
+        "cryptojslib": "*",
         "bootstrap": "*"
     }
 }

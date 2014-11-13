@@ -24,7 +24,6 @@ Kimo.require = (function(r) {
             "Kimo.ParamsContainer": "kimonic/core/Kimo.ParamsContainer",
             "Kimo.Utils": "kimonic/core/Kimo.Utils",
             "Kimo.ViewStack": "kimonic/core/Kimo.ViewStack",
-
             "jquery": "kimonic/vendor/jquery/dist/jquery.min",
             "signals": "kimonic/vendor/signals/dist/signals.min",
             "hasher": "kimonic/vendor/hasher/dist/js/hasher.min",

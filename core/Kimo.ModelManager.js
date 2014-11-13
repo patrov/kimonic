@@ -86,14 +86,19 @@ define(["Kimo.Observable","jquery"], function(Observable, jQuery) {
              *
              **/
             getAll: function(options) {
-                var def = new $.Deferred();
-                var self = this;
+                var def = new $.Deferred(),
+                self = this,
+                container = [],
+                data,
+                triggerEvent,
+                results;
+                triggerEvent = options.triggerCreateEvent || false;
                  _adapter.findAll(this.getName(), options).done(function(response){
-                    var container = [];
-                    var results = response.result;
+                     container = [];
+                     results = response.result;
                     if (results) {
                         for (var resultKey in results) {
-                            var data = self.create(results[resultKey], false, false);
+                            data = self.create(results[resultKey], triggerEvent, false);
                             container.push($.extend(true, {}, data));
                         }
                     }
@@ -118,8 +123,8 @@ define(["Kimo.Observable","jquery"], function(Observable, jQuery) {
                 return def;
             },
             create: function(modelData, triggerEvents, persist) {
-                var triggerEvents = (typeof triggerEvents === "boolean") ? triggerEvents : true;
-                var persist = (typeof persist === "boolean") ? persist : true;
+                 triggerEvents = (typeof triggerEvents === "boolean") ? triggerEvents : true;
+                 persist = (typeof persist === "boolean") ? persist : true;
                 if (typeof this.model !== "function") {
                     return false;
                 }

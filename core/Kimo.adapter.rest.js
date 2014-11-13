@@ -1,4 +1,4 @@
-define(["Kimo.Utils","Kimo.ModelManager","Kimo.ModelAdapter"], function(Utils,KimoModelManager,AdapterRegistry){
+define(["Kimo.Utils","Kimo.ModelAdapter"], function(Utils, AdapterRegistry){
     var makeRestRequest = Utils.makeRestRequest;
     var restAdapter = {
         settings: {
