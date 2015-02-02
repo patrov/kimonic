@@ -1,4 +1,4 @@
-define(["jquery"], function(jQuery) {
+define(["Kimo.Utils", "jquery", 'require'], function(Utils, jQuery, require) {
 
     var ActivityManager = (function(c, b) {
         var g = []; //activities container
@@ -173,33 +173,30 @@ define(["jquery"], function(jQuery) {
             g.push(activity);
         };
 
-        var _start = function(l, params, appname) {
-            var k = false;
-            var j = null;
-            c.each(g, function(n, o) {
-                if (o.name === l && o.appname === appname) {
-                    k = o.activity;
-                    if (k) {
-                        /*create or just change state*/
-                        if (!o.instance) {
-                            var m = new k(params);
-                            o.instance = m;
-                            j = o;
-                            o.state = 1;
-                        } else {
-                            j = o;
-                            o.state = 1;
-                            /*call resume as activity is alreadyStarted*/
-                            if (typeof o.instance.onResume === "function") {
-                                o.instance.onResume(params);
-                            }
-                        }
-                        return false;
+        var _start = function(activityName, params, appname) {
+            var k = false,
+                j = null,
+                dfd = new jQuery.Deferred(),
+                activityInfos = _findActivity(activityName);
+            if (!activityInfos) {
+                Utils.requireWithPromise(['activity!'+appname+':'+activityName]).done(function (req) {
+                    activityInfos = _findActivity(activityName);
+                    if (!activityInfos.instance) {
+                        activityInfos.instance = new activityInfos.activity(params);
+                    } else {
+                      if(typeof activityInfos.instance.onResume === "function") {
+                           activityInfos.instance.onResume(params);
+                      }
                     }
-                }
-            });
-            return j;
+                    activityInfos.state = 1;
+                    dfd.resolve(activityInfos);
+                }).fail(function () {
+                    dfd.reject();
+                });
+            }
+            return dfd.promise();
         };
+
         var _stop = function(params) {
             if (typeof params === "string") {
                 var activityInfos = _findActivity(params);
