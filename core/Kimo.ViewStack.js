@@ -3,7 +3,7 @@
  * a view can have a title? oe his title is a part of his content?
  *
  * */
-define([], function() {
+define(['jquery'], function(jQuery) {
     var View = function View(userSettings) {
         this.view = null;
         this._settings = {
@@ -157,7 +157,10 @@ define([], function() {
     }
 
     ViewStack.prototype.render = function(container, append) {
-        this.render = (append) ? $(container).append(this.template) : $(container).replaceWith(this.template);
+        if (!jQuery(container).length) {
+            throw "KimoViewStackException Container "+container+ " can't be found!";
+        }
+            this.render = (append) ? $(container).append(this.template) : $(container).replaceWith(this.template);
     }
 
     ViewStack.prototype.selectView = function(viewname, content) {

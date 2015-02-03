@@ -175,7 +175,6 @@ define(["Kimo.Utils", "jquery", 'require'], function(Utils, jQuery, require) {
 
         var _start = function(activityName, params, appname) {
             var k = false,
-                j = null,
                 dfd = new jQuery.Deferred(),
                 activityInfos = _findActivity(activityName);
             if (!activityInfos) {

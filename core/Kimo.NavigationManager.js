@@ -103,12 +103,13 @@ define(["Kimo.ActivityManager","vendor.crossroads.main","hasher"],function(Activ
                 self._currentActivityInfos = activityInfos;
                 var viewName = activityInfos.instance.view.name;
                 self._viewManager.gotoView(viewName);
+                
                 /* execute actions */
+
                 var activityAction = routeActions[1]+"Action";
                 /* change to invoke */
                 if (typeof self._currentActivityInfos.instance[activityAction] === "function") {
                     self._currentActivityInfos.instance[activityAction](params,self._parameterBags[cleanUrl]);
-                    alert("icic");
                 } else {
                     throw "action :"+activityAction+" can't be found in "+routeActions[0];
                 }
@@ -158,9 +159,10 @@ define(["Kimo.ActivityManager","vendor.crossroads.main","hasher"],function(Activ
                 if(_currentActivityInfos){
                     _activityManager.stopActivity(_currentActivityInfos);
                 }
-                var activityInfos = _activityManager.startActivity(activityName,params);
-                _currentActivityInfos = activityInfos; //per app
-                _viewManager.gotoView($(activityInfos.instance.view).attr("id"));
+                _activityManager.startActivity(activityName,params).done(function (activityInfos) {
+                    _currentActivityInfos = activityInfos;
+                    _viewManager.gotoView($(activityInfos.instance.view).attr("id"));
+                });
             },
             back : function(){}
         };
