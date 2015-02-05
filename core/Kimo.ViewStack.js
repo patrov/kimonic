@@ -46,7 +46,7 @@ define(['jquery'], function(jQuery) {
             root.addClass("view");
             root.addClass(this._settings.cls);
             root.attr("data-name", this.name);
-            root.css("position", "absolute");
+            root.css("position", "");
             /* revoir cas pourcentage et cas px*/
 
             if(!isNaN(parentHeight)){
@@ -94,20 +94,23 @@ define(['jquery'], function(jQuery) {
             var root = $("<div/>");
             $(root).attr("id", this._settings.id);
             $(root).addClass(this._settings.cls);
-            var defaultCss = {
+            var defaultCss = { };
+
+            if (this._settings.hasOwnProperty("size")) {
+                var position = this._settings.size.position || "";
+            }
+
+            if (position === "fixed") {
+                defaultCss = {
                 width: this._settings.size.width,
                 height: this._settings.size.height,
                 background: "#FFFFFF",
-                margin: "auto"
+                margin: "auto",
+                position: position
             };
+            }
 
-            if(this._settings.hasOwnProperty("size")){
-                var position = this._settings.size.position || "";
-            }
-            if(position=="fullsize"){
-                defaultCss.width = "100%";
-                defaultCss.height = "auto";
-            }
+
             $(root).css($.extend(true, defaultCss, this._settings.css));
             $(root).addClass("kimo ui viewstack");
             this.template = root;
