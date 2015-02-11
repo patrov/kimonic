@@ -3,7 +3,7 @@
  * a view can have a title? oe his title is a part of his content?
  *
  * */
-define([], function() {
+define(['jquery'], function(jQuery) {
     var View = function View(userSettings) {
         this.view = null;
         this._settings = {
@@ -46,7 +46,7 @@ define([], function() {
             root.addClass("view");
             root.addClass(this._settings.cls);
             root.attr("data-name", this.name);
-            root.css("position", "absolute");
+            root.css("position", "");
             /* revoir cas pourcentage et cas px*/
 
             if(!isNaN(parentHeight)){
@@ -94,20 +94,23 @@ define([], function() {
             var root = $("<div/>");
             $(root).attr("id", this._settings.id);
             $(root).addClass(this._settings.cls);
-            var defaultCss = {
+            var defaultCss = { };
+
+            if (this._settings.hasOwnProperty("size")) {
+                var position = this._settings.size.position || "";
+            }
+
+            if (position === "fixed") {
+                defaultCss = {
                 width: this._settings.size.width,
                 height: this._settings.size.height,
                 background: "#FFFFFF",
-                margin: "auto"
+                margin: "auto",
+                position: position
             };
+            }
 
-            if(this._settings.hasOwnProperty("size")){
-                var position = this._settings.size.position || "";
-            }
-            if(position=="fullsize"){
-                defaultCss.width = "100%";
-                defaultCss.height = "auto";
-            }
+
             $(root).css($.extend(true, defaultCss, this._settings.css));
             $(root).addClass("kimo ui viewstack");
             this.template = root;
@@ -157,7 +160,10 @@ define([], function() {
     }
 
     ViewStack.prototype.render = function(container, append) {
-        this.render = (append) ? $(container).append(this.template) : $(container).replaceWith(this.template);
+        if (!jQuery(container).length) {
+            throw "KimoViewStackException Container "+container+ " can't be found!";
+        }
+            this.render = (append) ? $(container).append(this.template) : $(container).replaceWith(this.template);
     }
 
     ViewStack.prototype.selectView = function(viewname, content) {

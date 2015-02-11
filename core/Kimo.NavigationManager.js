@@ -87,6 +87,7 @@ define(["Kimo.ActivityManager","vendor.crossroads.main","hasher"],function(Activ
 
         /* Follow the  links */
         Router.prototype.routeTo = function(routeInfos,params){
+            var self = this;
             if(typeof routeInfos!="object") throw "Router.routeTo RouteInfos";
             var routeActions = routeInfos["action"];
             routeActions = routeActions.split(":");
@@ -95,22 +96,26 @@ define(["Kimo.ActivityManager","vendor.crossroads.main","hasher"],function(Activ
                 this._activityManager.stopActivity(this._currentActivityInfos);
             }
             var cleanUrl = routeInfos.url.replace("#/","");
+
             //var params =  $.extend(true,params,this._parameterBags[cleanUrl]);
-            /*move elseWhere*/
-            var activityInfos = ActivityManager.startActivity(routeActions[0],{},this._appName);
-            if(!activityInfos) throw "activity infos can't be found for ["+this._appName+":"+routeActions[0]+"]";
-            this._currentActivityInfos = activityInfos;
-            var viewName = activityInfos.instance.view.name;
-            this._viewManager.gotoView(viewName);
-            /*execute actions*/
-            var activityAction = routeActions[1]+"Action";
-            if(typeof this._currentActivityInfos.instance[activityAction]==="function"){
-                this._currentActivityInfos.instance[activityAction](params,this._parameterBags[cleanUrl]);
-            /*clean params*/
-            // delete(this._parameterBags[cleanUrl]);
-            }else{
-                throw "action :"+activityAction+" can't be found in "+routeActions[0];
-            }
+            ActivityManager.startActivity(routeActions[0],{},this._appName).done(function (activityInfos) {
+                if(!activityInfos) throw "activity infos can't be found for ["+this._appName+":"+routeActions[0]+"]";
+                self._currentActivityInfos = activityInfos;
+                var viewName = activityInfos.instance.view.name;
+                self._viewManager.gotoView(viewName);
+                
+                /* execute actions */
+
+                var activityAction = routeActions[1]+"Action";
+                /* change to invoke */
+                if (typeof self._currentActivityInfos.instance[activityAction] === "function") {
+                    self._currentActivityInfos.instance[activityAction](params,self._parameterBags[cleanUrl]);
+                } else {
+                    throw "action :"+activityAction+" can't be found in "+routeActions[0];
+                }
+            }).fail(function(){
+                console.log("there");
+            });
         }
 
         Router.prototype.buildLink = function(path,params){
@@ -154,9 +159,10 @@ define(["Kimo.ActivityManager","vendor.crossroads.main","hasher"],function(Activ
                 if(_currentActivityInfos){
                     _activityManager.stopActivity(_currentActivityInfos);
                 }
-                var activityInfos = _activityManager.startActivity(activityName,params);
-                _currentActivityInfos = activityInfos; //per app
-                _viewManager.gotoView($(activityInfos.instance.view).attr("id"));
+                _activityManager.startActivity(activityName,params).done(function (activityInfos) {
+                    _currentActivityInfos = activityInfos;
+                    _viewManager.gotoView($(activityInfos.instance.view).attr("id"));
+                });
             },
             back : function(){}
         };
