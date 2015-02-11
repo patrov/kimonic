@@ -122,11 +122,12 @@ define(["Kimo.Observable","jquery"], function(Observable, jQuery) {
                 });
                 return def;
             },
+            
             create: function(modelData, triggerEvents, persist) {
                  triggerEvents = (typeof triggerEvents === "boolean") ? triggerEvents : true;
                  persist = (typeof persist === "boolean") ? persist : true;
                 if (typeof this.model !== "function") {
-                    return false;
+                    throw "EntityCantBeFoundError";
                 }
                 var data = new this.model(modelData);
                 data._reftoRepository = this;
@@ -288,7 +289,7 @@ define(["Kimo.Observable","jquery"], function(Observable, jQuery) {
 
                     if (!silent) {
                         this.trigger("change", "update", this, changed);
-                    }
+                    } 
                     if (typeof this._reftoRepository == "object") {
                         this._reftoRepository.trigger("change", "update", this, changed);
                     }

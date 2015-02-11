@@ -7,6 +7,7 @@ var Kimo = Kimo || {};
 Kimo.require = (function(r) {
     r.config({
         baseUrl: appPath+"js/",
+		urlArgs: 'rand=' + Math.random(),
         catchError:true,
         paths: {
             "Kimo.ActivityManager": "kimonic/core/Kimo.ActivityManager",
@@ -29,6 +30,7 @@ Kimo.require = (function(r) {
             "hasher": "kimonic/vendor/hasher/dist/js/hasher.min",
             "vendor.crossroads.main": "kimonic/vendor/crossroads/dist/crossroads.min",
             "text": "kimonic/vendor/requirejs-text/text",
+            "js.class": "kimonic/vendor/jsclass/index",
             "bootstrap": "kimonic/vendor/bootstrap/dist/js/bootstrap.min",
             "vendor.dropzone":"kimonic/vendor/dropzone/dropzone.amd.module.min",
             "Form.image": "kimonic/formfields/image/main"
@@ -36,6 +38,9 @@ Kimo.require = (function(r) {
         shim: {
             'Kimo': {
                 exports: "Kimo"
+            },
+            'bootstrap': {
+                deps : ['jquery']
             }
         }
 
