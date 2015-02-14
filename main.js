@@ -31,7 +31,7 @@ Kimo.require = (function(r) {
             "hasher": "kimonic/vendor/hasher/dist/js/hasher.min",
             "vendor.crossroads.main": "kimonic/vendor/crossroads/dist/crossroads.min",
             "text": "kimonic/vendor/requirejs-text/text",
-            "js.class": "kimonic/vendor/jsclass/index",
+            "jsclass": "kimonic/node_modules/jsclass/min/core",
             "bootstrap": "kimonic/vendor/bootstrap/dist/js/bootstrap.min",
             "vendor.dropzone":"kimonic/vendor/dropzone/dropzone.amd.module.min",
             "Form.image": "kimonic/formfields/image/main"

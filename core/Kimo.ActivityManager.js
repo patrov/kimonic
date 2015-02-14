@@ -13,7 +13,7 @@ define(["Kimo.Utils", "jquery", 'require'], function(Utils, jQuery, require) {
                 _createActivityMap(j.appname);
                 _context[j.appname].viewManager = j.viewManager;
             }
-            // c.extend(true,h,j);
+        // c.extend(true,h,j);
         };
 
         var _createActivityMap = function(appname) {
@@ -133,7 +133,7 @@ define(["Kimo.Utils", "jquery", 'require'], function(Utils, jQuery, require) {
             }
             var activitiesRoutes = {};
             activitiesRoutes[activityName] = routes;
-            var activitiesRoutes = c.extend(true, _routes[appkey], activitiesRoutes);
+            activitiesRoutes = c.extend(true, _routes[appkey], activitiesRoutes);
             _routes[appkey] = activitiesRoutes;
             return _routes;
         }
@@ -172,25 +172,39 @@ define(["Kimo.Utils", "jquery", 'require'], function(Utils, jQuery, require) {
             }
             g.push(activity);
         };
+        
+        var _loadActivity = function (activityName) {
+            
+        }
 
+        var isCurrentActivity = function (activityInfos) {
+            
+        };
+        
         var _start = function(activityName, params, appname) {
             var k = false,
-                dfd = new jQuery.Deferred(),
-                activityInfos = _findActivity(activityName);
+            dfd = new jQuery.Deferred(),
+            activityInfos = _findActivity(activityName);
+            if(activityInfos) {
+                if(typeof activityInfos.instance.onResume === "function") {
+                    activityInfos.instance.onResume(params);
+                    activityInfos.state = 1;
+                    dfd.resolve(activityInfos);
+                }   
+            }  
             if (!activityInfos) {
-                Utils.requireWithPromise(['activity!'+appname+':'+activityName]).done(function (req) {
+                Utils.requireWithPromise(['activity!'+appname+':'+activityName]).done(function (response) {
                     activityInfos = _findActivity(activityName);
+                    if (!activityInfos) {
+                        dfd.reject(response);
+                    }
                     if (!activityInfos.instance) {
                         activityInfos.instance = new activityInfos.activity(params);
-                    } else {
-                      if(typeof activityInfos.instance.onResume === "function") {
-                           activityInfos.instance.onResume(params);
-                      }
                     }
                     activityInfos.state = 1;
                     dfd.resolve(activityInfos);
-                }).fail(function () {
-                    dfd.reject();
+                }).fail(function (reason) {
+                    dfd.reject(reason);
                 });
             }
             return dfd.promise();

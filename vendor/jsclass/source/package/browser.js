@@ -1,2 +1,0 @@
-Package.loader = Package.BrowserLoader;
-

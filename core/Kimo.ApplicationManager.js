@@ -7,7 +7,6 @@ define(["Kimo.NavigationManager", "Kimo.ActivityManager", "Kimo.ViewStack"], fun
         AbstractApplication.prototype._init = function () {
             this.viewManager = new ViewStack();
             this.viewManager.configure(this.getParam("viewSettings"));
-            console.log(this.getParam("viewSettings"));
 
 
 
@@ -46,8 +45,6 @@ define(["Kimo.NavigationManager", "Kimo.ActivityManager", "Kimo.ViewStack"], fun
                 }
             }
         })()
-        /* mandatory */
-        var _cleanDefinition = function () {}
         var _create = function (appName, definition) {
                 appName = (typeof appName == "string") ? appName : "none";
                 var appClass = function () {
@@ -80,11 +77,7 @@ define(["Kimo.NavigationManager", "Kimo.ActivityManager", "Kimo.ViewStack"], fun
                     throw new Error("Activity can't be null")
                 }
                  /* Activity Manager will create a context
-                 * where an app is bound to a context
-                 *
-                 * chaque application a sa propre activity manager
-                 * ou un activity manager to rule them all?
-                 *
+                  * for each app  
                  * */
                 var activityManager = ActivityManager.init({
                     appname: i,
@@ -92,6 +85,7 @@ define(["Kimo.NavigationManager", "Kimo.ActivityManager", "Kimo.ViewStack"], fun
                 });
                 d[i].setActivityManager(ActivityManager);
                 var currentRoute = window.location.hash;
+                
                 /* Init Router and handle all the app routes */
                 this.router = NavigationManager.init({
                     activitiesManager: ActivityManager,

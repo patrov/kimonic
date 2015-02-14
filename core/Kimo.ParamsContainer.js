@@ -36,7 +36,7 @@ define([], function() {
             }
             return this.getInstance();
         }
-        return ParamsContainer;
+        return new ParamsContainer;
     })()
     Kimo.ParamsContainer = api;
     return api;

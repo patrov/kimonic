@@ -2,7 +2,7 @@ define([], function () {
 
     var normalizeName = function (name) {
         var pos = name.search('Activity'),
-            activityName = name.substring(0,pos);
+            activityName = name.substring(0, pos);
             return activityName.toLowerCase()+"."+"activity";
     };
 
@@ -12,9 +12,10 @@ define([], function () {
                 activityname = normalizeName(infos[1]),
                 fullPath = config.baseUrl + 'apps/' + infos[0].toLowerCase() +'/activities/'+ activityname+'.js';
             req([fullPath], function () {
-                /* use events here and activity */
-                onload();
-            },onload.error);
+                onload({path: infos[0].toLowerCase()+'/activities/'+activityname+'.js'});
+            }, function (reason) {
+                onload.error(reason);
+            });
         }
     }
 
