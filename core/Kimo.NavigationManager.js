@@ -3,7 +3,7 @@
  * must create a router instance
  *
  **/
-define(["Kimo.ActivityManager","vendor.crossroads.main","hasher"],function(ActivityManager,crossroads,hasher){
+define(["Kimo.ActivityManager","vendor.crossroads.main", "vendor.handlebars", "hasher"],function(ActivityManager, crossroads, Handlebars, hasher){
 
     var NavigationManager = (function($,global){
         var _settings = {},
@@ -88,7 +88,7 @@ define(["Kimo.ActivityManager","vendor.crossroads.main","hasher"],function(Activ
         }
 
         /* Follow the  links */
-        Router.prototype.routeTo = function(routeInfos,params){
+        Router.prototype.routeTo = function(routeInfos, params){
             var self = this;
             if (typeof routeInfos !== "object") { throw "RouterExceptio:routeTo RouteInfos"; }
             var routeActions = routeInfos["action"];
@@ -103,28 +103,35 @@ define(["Kimo.ActivityManager","vendor.crossroads.main","hasher"],function(Activ
                 self._currentActivityInfos = activityInfos;
                 var viewName = activityInfos.instance.view.name;
                 self._viewManager.gotoView(viewName);
-                
+
                 /* execute actions */
 
                 var activityAction = routeActions[1]+"Action";
                 /* change to invoke */
+                if(routeInfos.hasOwnProperty('templateName')) {
+                    routeActions[1] = routeInfos.templateName;
+                }
+
                 if (typeof self._currentActivityInfos.instance[activityAction] === "function") {
-                   
-                   /* handle template here with events */
-                   require(['template!'+'main.showProfile'], function (template) {
+                    var templateInfos = routeActions.join('.');
+                   require(['template!'+self._appName+'.'+templateInfos], function (template) {
                        /* add view ... deal with [templateReady] too deal with place holder ... deal with loader */
-                        var actitivyView = $(self._currentActivityInfos.instance.view.view).html($(template));
-                        self._currentActivityInfos.instance[activityAction](params, self._parameterBags[cleanUrl]);
+                    var templateContent = Handlebars.compile(template);
+                    var templateData = self._currentActivityInfos.instance[activityAction](params, self._parameterBags[cleanUrl]);
+                    var render = templateContent(templateData || {});
+                    $(self._currentActivityInfos.instance.view.view).html($(render));
+
                    }, function () {
+                        /*handle default error default error page */
                         self._currentActivityInfos.instance[activityAction](params, self._parameterBags[cleanUrl]);
                    });
                     //require(['template!'+])
-                   
+
                 } else {
                     throw "action :"+activityAction+" can't be found in "+routeActions[0];
                 }
             }).fail(function(reason) {
-                throw "Activity ["+ reason.path +"] can't be found!";  
+                throw "Activity ["+ reason.path +"] can't be found!";
             });
         }
 

@@ -7,6 +7,6 @@
 		"url": "https://github.com/nodejitsu/browsenpm.org"
 	},
     "dependencies": {
-        "jsclass": "4.0.5"
+        "jsclass": "4.0.5",
     }
 }

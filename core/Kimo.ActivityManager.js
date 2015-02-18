@@ -172,7 +172,7 @@ define(["Kimo.Utils", "jquery", 'require'], function(Utils, jQuery, require) {
             }
             g.push(activity);
         };
-        
+
         var _start = function(activityName, params, appname) {
             var k = false,
             dfd = new jQuery.Deferred(),
@@ -182,8 +182,8 @@ define(["Kimo.Utils", "jquery", 'require'], function(Utils, jQuery, require) {
                     activityInfos.instance.onResume(params);
                     activityInfos.state = 1;
                     dfd.resolve(activityInfos);
-                }   
-            }  
+                }
+            }
             if (!activityInfos) {
                 Utils.requireWithPromise(['activity!'+appname+':'+activityName]).done(function (response) {
                     activityInfos = _findActivity(activityName);
@@ -196,6 +196,7 @@ define(["Kimo.Utils", "jquery", 'require'], function(Utils, jQuery, require) {
                     activityInfos.state = 1;
                     dfd.resolve(activityInfos);
                 }).fail(function (reason) {
+                    console.log("reason", reason);
                     dfd.reject(reason);
                 });
             }

@@ -32,6 +32,7 @@ Kimo.require = (function(r) {
             "signals": "kimonic/vendor/signals/dist/signals.min",
             "hasher": "kimonic/vendor/hasher/dist/js/hasher.min",
             "vendor.crossroads.main": "kimonic/vendor/crossroads/dist/crossroads.min",
+            "vendor.handlebars": "kimonic/vendor/handlebars/handlebars.min",
             "text": "kimonic/vendor/requirejs-text/text",
             "jsclass": "kimonic/node_modules/jsclass/min/core",
             "bootstrap": "kimonic/vendor/bootstrap/dist/js/bootstrap.min",
