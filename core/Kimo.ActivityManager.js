@@ -121,7 +121,7 @@ define(["Kimo.Utils", "jquery", 'require'], function(Utils, jQuery, require) {
                     m.eventType = c.trim(l[l.length - 1]);
                     m.selector = c.trim(l[0]);
                     k.push(m);
-                    c(j.view).delegate(m.selector, m.eventType, m.callback)
+                    c(j.view.view).delegate(m.selector, m.eventType, m.callback);
                 })
             }
         };
@@ -171,14 +171,6 @@ define(["Kimo.Utils", "jquery", 'require'], function(Utils, jQuery, require) {
                 }
             }
             g.push(activity);
-        };
-        
-        var _loadActivity = function (activityName) {
-            
-        }
-
-        var isCurrentActivity = function (activityInfos) {
-            
         };
         
         var _start = function(activityName, params, appname) {

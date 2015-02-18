@@ -109,9 +109,17 @@ define(["Kimo.ActivityManager","vendor.crossroads.main","hasher"],function(Activ
                 var activityAction = routeActions[1]+"Action";
                 /* change to invoke */
                 if (typeof self._currentActivityInfos.instance[activityAction] === "function") {
-                    self._currentActivityInfos.instance[activityAction](params,self._parameterBags[cleanUrl]);
-                    /*create an invoke method tha*/
-                    
+                   
+                   /* handle template here with events */
+                   require(['template!'+'main.showProfile'], function (template) {
+                       /* add view ... deal with [templateReady] too deal with place holder ... deal with loader */
+                        var actitivyView = $(self._currentActivityInfos.instance.view.view).html($(template));
+                        self._currentActivityInfos.instance[activityAction](params, self._parameterBags[cleanUrl]);
+                   }, function () {
+                        self._currentActivityInfos.instance[activityAction](params, self._parameterBags[cleanUrl]);
+                   });
+                    //require(['template!'+])
+                   
                 } else {
                     throw "action :"+activityAction+" can't be found in "+routeActions[0];
                 }
