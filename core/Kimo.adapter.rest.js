@@ -4,6 +4,7 @@ define(["Kimo.Utils","Kimo.ModelAdapter"], function(Utils, AdapterRegistry){
         settings: {
             availableActions: ["create", "read", "update", "remove"]
         },
+
         invoke: function(action, model, repository, callbacks, params) {
             if (this.settings.availableActions[action] == "undefined")
                 return false;
@@ -11,19 +12,19 @@ define(["Kimo.Utils","Kimo.ModelAdapter"], function(Utils, AdapterRegistry){
                 return false;
             return this[action].call(this, model, repository, callbacks, params);
         },
-        
+
         invokeRest : function(action,model,repository,callbacks,params){
             if (this.settings.availableActions[action] == "undefined") throw new "InvalidMethod";
-            return this[action].call(this, model, repository,callbacks,params);  
+            return this[action].call(this, model, repository,callbacks,params);
         },
-        
+
         create: function(model, repository, callbacks) {
-            
+
             var data = {
                 model: model.name,
                 data: JSON.stringify(model.toJson(true))
             };
-            
+
             return makeRestRequest(model.getPath(), {
                 data: data,
                 type: "POST",
@@ -40,7 +41,7 @@ define(["Kimo.Utils","Kimo.ModelAdapter"], function(Utils, AdapterRegistry){
                 }
             });
         },
-        
+
         remove: function(model, repository, callbacks) {
             if (!model.isNew()) {
                 var data = {
@@ -96,7 +97,7 @@ define(["Kimo.Utils","Kimo.ModelAdapter"], function(Utils, AdapterRegistry){
                 }
             });
         },
-        
+
         findAll: function(repositoryName, options) {
             var repositoryInstance = Kimo.ModelManager.getRepository(repositoryName);
             var repository = repositoryName.replace(/repository/gi, "");
@@ -104,9 +105,9 @@ define(["Kimo.Utils","Kimo.ModelAdapter"], function(Utils, AdapterRegistry){
             return makeRestRequest(repositoryInstance.getPath()+"/findAll/"+repository, {
                 type:"GET"
             });
-           
+
         }
     };
-    
+
     AdapterRegistry.register("restAdapter",restAdapter);
 });

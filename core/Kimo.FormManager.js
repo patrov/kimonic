@@ -3,7 +3,7 @@
  */
 
 define(["Kimo.DbManager","Kimo.Observable","Kimo.Utils","vendor.dropzone"], function(DbManager,Observable,Utils,Dropzone ) {
-    
+
     var DataWrapper = function(data) {
 
         this._init = function(data) {
@@ -40,7 +40,7 @@ define(["Kimo.DbManager","Kimo.Observable","Kimo.Utils","vendor.dropzone"], func
         /*Eviter d'écraser les types par défaut*/
         /*responsabilités:
          * - Fournir Interface pour les type de champs
-         * - Garder un catalogue des différents type de champs disponibles 
+         * - Garder un catalogue des différents type de champs disponibles
          * - Rendre:afficher les différents Eléments
          * - Rendre:afficher le formulaire
          **/
@@ -208,7 +208,7 @@ define(["Kimo.DbManager","Kimo.Observable","Kimo.Utils","vendor.dropzone"], func
                 };
                 this.dynformHandlers[key] = dynformInfos;
 
-                //this.dynformHandlers[] = 
+                //this.dynformHandlers[] =
                 var self = this; //form -> source
                 var callback = (function(formInfos, conditionFunc) {
                     return function(value) {
@@ -289,14 +289,16 @@ define(["Kimo.DbManager","Kimo.Observable","Kimo.Utils","vendor.dropzone"], func
                     }
                 };
                 this.trigger("submit", event);
+                return;
             }
+            throw "[FormBuilder:submit] form data is not valid!";
         },
-        
+
         FormBuilder.prototype.validate = function() {
             var data = this.getData(true);
             return this.validator(data);
         }
-        
+
         /** add dynamically a new field to the form */
         FormBuilder.prototype.appendField = function(fieldsConfig, register) {
             var fieldType = fieldsConfig.type;
@@ -342,7 +344,7 @@ define(["Kimo.DbManager","Kimo.Observable","Kimo.Utils","vendor.dropzone"], func
             var mixin = $.extend(true, {}, Observable);
             $.extend(this, mixin);
             this.mainWrapper = (typeof config.mainWrapper=="string") ? $(config.mainWrapper) : $("<form>");
-            
+
             this._registerEvents(["submit", "cancel", "error", "mouseIn", "mouseOut","beforeRender"]);
             this.fieldsMap = config.map;
 
@@ -387,7 +389,7 @@ define(["Kimo.DbManager","Kimo.Observable","Kimo.Utils","vendor.dropzone"], func
          */
         FormBuilder.prototype.render = function(container) {
             container = container || null;
-            
+
             var renders = document.createDocumentFragment();
             var fieldRenderMap = {};
             /*handler before render : form and fields*/
@@ -424,23 +426,23 @@ define(["Kimo.DbManager","Kimo.Observable","Kimo.Utils","vendor.dropzone"], func
             $.each(this.subforms, function(i, subform) {
                 renders.appendChild(subform.render());
             });
-            
+
             /* FormRender event allows us to update the render --> if so  the render object should be global */
             FormManager.EventHub.trigger("beforeRender",{
                 form: self,
                 renders: renders
             })
-            
+
             if (this.buttons) {
                 renders.appendChild(this.buttons.get(0));
-            }           
-            
+            }
+
             if(typeof this.beforeRender=="function"){
                 renders =  this.beforeRender(fieldRenderMap,renders).get(0);
-            } 
-            
+            }
+
             renders = this.mainWrapper.append($(renders));
-            
+
             if (container) {
                 $(container).append(renders);
                 renders = container;
@@ -573,19 +575,19 @@ define(["Kimo.DbManager","Kimo.Observable","Kimo.Utils","vendor.dropzone"], func
             getSettings: function() {
                 return this._settings;
             },
-            
+
             getFieldName: function() {
                 return this._settings.name;
             },
-            
+
             getMainWrapper : function(){
                 return this.mainFormWrapper;
             },
-            
+
             getMainForm: function() {
                 return this._settings.mainform;
             },
-            
+
             getLabelField: function() {
                 console.warn({
                     error: "getLabelField not implemented in form:" + this.getMainForm().name + " for field: " + this.getFieldName()
@@ -614,7 +616,7 @@ define(["Kimo.DbManager","Kimo.Observable","Kimo.Utils","vendor.dropzone"], func
                 if (!newvalue)
                     return;
                 //if(newvalue == this._oldValue) return;
-                //var oldValue = this._value; 
+                //var oldValue = this._value;
                 //this._oldValue = oldValue;
                 this._value = newvalue;
                 this.trigger("valueChanged", newvalue, this);
@@ -712,13 +714,13 @@ define(["Kimo.DbManager","Kimo.Observable","Kimo.Utils","vendor.dropzone"], func
             return _formConfig[name];
         }
         var _getInstance = function(name, newInstance) {
-            
+
             newInstance = (typeof newInstance =="boolean") ? newInstance : false;
-          
+
             if(_formConfig.hasOwnProperty('name') && !newInstance){
                 return _formConfig[name];
             }
-            
+
             if (name in _defMap) {
                 var form = new FormBuilder(name, _defMap[name]);
                 _formConfig[name] = form;
@@ -1086,7 +1088,7 @@ define(["Kimo.DbManager","Kimo.Observable","Kimo.Utils","vendor.dropzone"], func
         },
         /*handle form data or register some sort of me raw/json*/
         handleFormData: function(event) {
-            /**the idea: form Render do it job as usual 
+            /**the idea: form Render do it job as usual
              * the plugin knows how to handle data for each field
              **/
             var formName = event.formName;
@@ -1104,7 +1106,7 @@ define(["Kimo.DbManager","Kimo.Observable","Kimo.Utils","vendor.dropzone"], func
 
     /*use template and template key
      * bootstap
-     * handle donnée 
+     * handle donnée
      *  get Template from a template container
      *  handle template key
      *  use a template file [] defined by default <data-text-template='text'/>
@@ -1116,7 +1118,7 @@ define(["Kimo.DbManager","Kimo.Observable","Kimo.Utils","vendor.dropzone"], func
             label: "###your_label###",
             placeholder: ""
         },
-        
+
         /* explicit init */
         init: function() {
             this.field = $("<p><label class='field-title'></label><input class=\"mainField input-block-level\" type=\"text\"/></p>").clone();
@@ -1128,10 +1130,10 @@ define(["Kimo.DbManager","Kimo.Observable","Kimo.Utils","vendor.dropzone"], func
             this.field.find("input").attr("id","field_"+this.id);
             this._bindEvents();
         },
-        
+
         _bindEvents: function() {
             $(this.mainFormWrapper).delegate("#field_"+this.id,"blur",$.proxy(this._handleChange,this));
-        //$(this.mainFormWrapper)           
+        //$(this.mainFormWrapper)
         },
         getMainField: function() {
             return this.field.find("input").eq(0);
@@ -1157,9 +1159,9 @@ define(["Kimo.DbManager","Kimo.Observable","Kimo.Utils","vendor.dropzone"], func
             return true;
         }
     });
-    
-    
-    
+
+
+
     FormManager.registerField("password", {
         _settings: {
             templateKey: "sqljdh",
@@ -1363,11 +1365,11 @@ define(["Kimo.DbManager","Kimo.Observable","Kimo.Utils","vendor.dropzone"], func
 
     /**********DATALIST***************/
     /**
-     * Datalist allows autocompletion 
+     * Datalist allows autocompletion
      * multiple selection
      * custom item render
-     * 
-     * 
+     *
+     *
      */
     FormManager.registerField("datalist", {
         _settings: {
@@ -1439,7 +1441,7 @@ define(["Kimo.DbManager","Kimo.Observable","Kimo.Utils","vendor.dropzone"], func
                 self._settings._dataSource = response.items;
             });
         },
-        
+
         _showResults: function(contents) {
             var self = this;
             var container = document.createDocumentFragment();
@@ -1548,7 +1550,7 @@ define(["Kimo.DbManager","Kimo.Observable","Kimo.Utils","vendor.dropzone"], func
             }
 
         },
-        _addNewForm: function(formType, data) { 
+        _addNewForm: function(formType, data) {
             if (typeof formType != "string")
                 return;
             data = (data) ? data : {};
@@ -1613,11 +1615,11 @@ define(["Kimo.DbManager","Kimo.Observable","Kimo.Utils","vendor.dropzone"], func
             this.field.find("label.field-title").text(this._settings.label);
             this.field.find("form").attr("id",this._settings.id);
             this.mainForm = this.field.find("#"+this._settings.id);
-            $(this.mainForm).attr("action",this._settings.config.url); 
+            $(this.mainForm).attr("action",this._settings.config.url);
             Dropzone.autoDiscover = false
             this.initFormUpload();
         },
-        
+
         initFormUpload: function() {
             var self = this;
             $(this.mainForm).addClass("dropzone");
@@ -1651,15 +1653,15 @@ define(["Kimo.DbManager","Kimo.Observable","Kimo.Utils","vendor.dropzone"], func
             });
             console.log(this.dropZone);
         },
-        
-        
+
+
         getMainField: function() {
             return $(this.field).find(".contentWrapper").eq(0);
         },
-        
+
         getValue: function() {
             /*renvoie le nom de/des fichiers uploadés*/
-            var files = this.dropZone.getAcceptedFiles(); 
+            var files = this.dropZone.getAcceptedFiles();
             console.log(files);
             return result;
         },
