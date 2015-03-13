@@ -36,8 +36,9 @@ define(['jquery'], function(jQuery) {
 
     View.prototype = {
         setContent: function(content) {
-            this.view.html(content);
+            this.view.hide().html(content).fadeIn("fast");
         },
+
         create: function(containerSize) {
             var parentWidth = parseInt(containerSize.width);
             var parentHeight = parseInt(containerSize.height);
@@ -167,13 +168,18 @@ define(['jquery'], function(jQuery) {
     }
 
     ViewStack.prototype.selectView = function(viewname, content) {
+
         var view = this.views[viewname];
+        if (this.currentView && (view.name === this.currentView.name)) {
+            return this.currentView;
+        }
         if (typeof view == "object") {
             this.template.find(".view").hide();
             if (content) {
                 view.setContent(content);
             }
             $(view.view).show();
+            this.currentView = view;
             return view;
         } else {
             throw "ViewManager:SelectView " + viewname + " can't be found";

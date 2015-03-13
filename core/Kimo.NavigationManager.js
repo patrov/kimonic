@@ -97,6 +97,7 @@ define(["Kimo.ActivityManager","vendor.crossroads.main", "vendor.handlebars", "h
             if(this._currentActivityInfos){
                 this._activityManager.stopActivity(this._currentActivityInfos);
             }
+
             var cleanUrl = routeInfos.url.replace("#/","");
                 //var params =  $.extend(true,params,this._parameterBags[cleanUrl]);
             ActivityManager.startActivity(routeActions[0],{},this._appName).done(function (activityInfos) {
@@ -111,7 +112,6 @@ define(["Kimo.ActivityManager","vendor.crossroads.main", "vendor.handlebars", "h
                 if(routeInfos.hasOwnProperty('templateName')) {
                     routeActions[1] = routeInfos.templateName;
                 }
-
                 if (typeof self._currentActivityInfos.instance[activityAction] === "function") {
                     var templateInfos = routeActions.join('.');
                    require(['template!'+self._appName+'.'+templateInfos], function (template) {
@@ -119,7 +119,7 @@ define(["Kimo.ActivityManager","vendor.crossroads.main", "vendor.handlebars", "h
                     var templateContent = Handlebars.compile(template);
                     var templateData = self._currentActivityInfos.instance[activityAction](params, self._parameterBags[cleanUrl]);
                     var render = templateContent(templateData || {});
-                    $(self._currentActivityInfos.instance.view.view).html($(render));
+                    self._currentActivityInfos.instance.view.setContent($(render));
 
                    }, function () {
                         /*handle default error default error page */
