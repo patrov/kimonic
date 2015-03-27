@@ -2,7 +2,8 @@ define(["Kimo.Utils","Kimo.ModelAdapter"], function(Utils, AdapterRegistry){
     var makeRestRequest = Utils.makeRestRequest;
     var restAdapter = {
         settings: {
-            availableActions: ["create", "read", "update", "remove"]
+            availableActions: ["create", "read", "update", "remove"],
+            envelope: "result"
         },
 
         invoke: function(action, model, repository, callbacks, params) {
@@ -23,15 +24,18 @@ define(["Kimo.Utils","Kimo.ModelAdapter"], function(Utils, AdapterRegistry){
             var data = {
                 model: model.name,
                 data: JSON.stringify(model.toJson(true))
-            };
-
+            },
+                self = this;
             return makeRestRequest(model.getPath(), {
                 data: data,
                 type: "POST",
                 success: function(response) {
-                    model.setUid(response.result.uid);
+                    if(self.settings.envelope) {
+                        response = response[self.settings.evelope];
+                    }
+                    model.setUid(response.uid);
                     if (typeof callbacks.success == "function") {
-                        callbacks.success(response.result);
+                        callbacks.success(response);
                     }
                 },
                 error: function(response) {

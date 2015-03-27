@@ -23,17 +23,17 @@ Kimo.require = (function(r) {
             "Kimo.rpcAdapter": "kimonic/core/Kimo.adapter.jsonrpc",
             "Kimo.NavigationManager": "kimonic/core/Kimo.NavigationManager",
             "Kimo.ParamsContainer": "kimonic/core/Kimo.ParamsContainer",
+            "Kimo.TemplateRenderer": "kimonic/core/Kimo.TemplateManager",
             "Kimo.Utils": "kimonic/core/Kimo.Utils",
             "activity": "kimonic/activity",
             "template": "kimonic/template",
-
+            "text": "kimonic/vendor/requirejs-text/text",
             "Kimo.ViewStack": "kimonic/core/Kimo.ViewStack",
             "jquery": "kimonic/vendor/jquery/dist/jquery.min",
             "signals": "kimonic/vendor/signals/dist/signals.min",
             "hasher": "kimonic/vendor/hasher/dist/js/hasher.min",
             "vendor.crossroads.main": "kimonic/vendor/crossroads/dist/crossroads.min",
             "vendor.handlebars": "kimonic/vendor/handlebars/handlebars.min",
-            "text": "kimonic/vendor/requirejs-text/text",
             "jsclass": "kimonic/node_modules/jsclass/min/core",
             "bootstrap": "kimonic/vendor/bootstrap/dist/js/bootstrap.min",
             "vendor.dropzone":"kimonic/vendor/dropzone/dropzone.amd.module.min",
@@ -59,6 +59,7 @@ define("Kimo/core",
     "Kimo.Utils",
     "Kimo.ViewStack",
     "Kimo.ActivityManager",
+    "Kimo.TemplateRenderer",
     "Kimo.ApplicationManager",
     "Kimo.DataView",
     "Kimo.ModelManager",
@@ -74,10 +75,10 @@ define("Kimo/core",
     "hasher",
     "vendor.crossroads.main",
     "vendor.dropzone",
-    "bootstrap",
+    "bootstrap"
     //  "Form.image"
     ], function(require, jQuery) {
         Kimo.jquery = jQuery.noConflict(true);
         $ = Kimo.jquery;
         return Kimo;
-    })
+    });

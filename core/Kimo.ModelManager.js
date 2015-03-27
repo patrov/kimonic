@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-define(["Kimo.Observable","jquery"], function(Observable, jQuery) {
+define(["Kimo.Observable", "jquery"], function(Observable, jQuery) {
 
     var ModelManager = (function($) {
         this._init = function() {
@@ -17,8 +17,8 @@ define(["Kimo.Observable","jquery"], function(Observable, jQuery) {
                 if (prefix)
                     id = prefix + "_" + id;
                 return id;
-            }
-        })()
+            };
+        }());
 
 
         var _getRepositoryInstance = function(repositoryName) {
@@ -42,11 +42,9 @@ define(["Kimo.Observable","jquery"], function(Observable, jQuery) {
                 cid = (typeof cid === "string") ? cid : 0;
                 return this.entities[cid];
             },
-
-            getPath: function(){
+            getPath: function() {
                 throw "getPath:NotImplementedYet";
             },
-
             findById: function(entityId) {
                 var resPromise = null;
                 var entity = this.entities[this.cidSidMap[entityId]];
@@ -69,6 +67,15 @@ define(["Kimo.Observable","jquery"], function(Observable, jQuery) {
                 }
                 return results;
             },
+                    
+            toJson: function() {
+                var results = [];
+                for(var entity in this.entities) {
+                    results.push(this.entities[entity].toJson());
+                }
+                return results;
+            },
+                    
             /*call is made via adapter*/
             get: function(index) {
                 var compteur = 0;
@@ -87,15 +94,15 @@ define(["Kimo.Observable","jquery"], function(Observable, jQuery) {
              **/
             getAll: function(options) {
                 var def = new $.Deferred(),
-                self = this,
-                container = [],
-                data,
-                triggerEvent,
-                results;
+                        self = this,
+                        container = [],
+                        data,
+                        triggerEvent,
+                        results;
                 triggerEvent = options.triggerCreateEvent || false;
-                 _adapter.findAll(this.getName(), options).done(function(response){
-                     container = [];
-                     results = response.result;
+                _adapter.findAll(this.getName(), options).done(function(response) {
+                    container = [];
+                    results = response.result;
                     if (results) {
                         for (var resultKey in results) {
                             data = self.create(results[resultKey], triggerEvent, false);
@@ -103,13 +110,26 @@ define(["Kimo.Observable","jquery"], function(Observable, jQuery) {
                         }
                     }
                     def.resolve(container);
-                })
+                });
                 return def.promise();
             },
             _registerNewModel: function(modelData) {
                 var data = new this.model(modelData);
                 data._reftoRepository = this;
-
+            },
+                    
+            populateData: function(data) {
+                var container = [],
+                        resultKey,
+                        entity,
+                        triggerEvent = true;//this.options.triggerCreateEvent || false;
+                if (data) {
+                    for (resultKey in data) {
+                        entity = this.create(data[resultKey], triggerEvent, false);
+                        container.push($.extend(true, {}, entity));
+                    }
+                }
+                return container;
             },
             find: function(entityId, callback) {
                 var promise = _adapter.find(this.getName(), entityId);
@@ -122,10 +142,9 @@ define(["Kimo.Observable","jquery"], function(Observable, jQuery) {
                 });
                 return def;
             },
-            
             create: function(modelData, triggerEvents, persist) {
-                 triggerEvents = (typeof triggerEvents === "boolean") ? triggerEvents : true;
-                 persist = (typeof persist === "boolean") ? persist : true;
+                triggerEvents = (typeof triggerEvents === "boolean") ? triggerEvents : true;
+                persist = (typeof persist === "boolean") ? persist : true;
                 if (typeof this.model !== "function") {
                     throw "EntityCantBeFoundError";
                 }
@@ -225,11 +244,9 @@ define(["Kimo.Observable","jquery"], function(Observable, jQuery) {
             },
             init: function() {
             },
-
-            getPath: function(){
+            getPath: function() {
                 throw "getPathMethod:NotImplementedYet";
             },
-
             checkData: function() {
                 console.log("checkData must be implemented for [" + this.name + "] entity");
                 return false;
@@ -289,7 +306,7 @@ define(["Kimo.Observable","jquery"], function(Observable, jQuery) {
 
                     if (!silent) {
                         this.trigger("change", "update", this, changed);
-                    } 
+                    }
                     if (typeof this._reftoRepository == "object") {
                         this._reftoRepository.trigger("change", "update", this, changed);
                     }

@@ -36,6 +36,7 @@ define(["jquery", "Kimo.Observable"], function (jquery, Observable) {
                 this.data = (typeof this._settings.data === "object") ? this._settings.data : {};
                 this.itemContainer = this.template.find(".itemcontainer").eq(0);
                 this.itemRenderer = this._settings.itemRenderer;
+                this.headerZone = this. template.find(".datalist-header").eq(0);
                 this.toolbarContainer = this.template.find(this._settings.toolbarContainerClass).eq(0);
                 this._buildToolbar(this._settings.buttons);
                 this.registerEvents(["mouseOnItem", "itemSelected", "mouseLeaveItem", "itemEdited", "itemDeleted", "afterRender"]);
@@ -45,6 +46,7 @@ define(["jquery", "Kimo.Observable"], function (jquery, Observable) {
                 if (this._settings.loadingMsg) {
                     $(this._settings.loadingMsg).addClass("kimo-loading-msg");
                 }
+                this.headerZone.hide();
                 this._bindEvents();
                 /* repository events */
                 this._bindRepositoryEvents();
@@ -86,12 +88,12 @@ define(["jquery", "Kimo.Observable"], function (jquery, Observable) {
          $(this.itemContainer).bind("mouseleave",function(){
          $(this).css("overflow-y","hidden");
          });*/
-            }
+            };
             this._bindRepositoryEvents = function () {
                 /*  this.data.on("change",function(reason,entity){
          });
          */
-            }
+            };
             this._buildToolbar = function (buttonInfos) {
                 var toolbars = document.createDocumentFragment();
                 for (var i in buttonInfos) {
@@ -102,7 +104,7 @@ define(["jquery", "Kimo.Observable"], function (jquery, Observable) {
                     $(btn_span).text(" " + btnConf["text"]);
                     $(btn_span).bind("click", $.proxy(btnConf["onclick"], this));
                     /*handle ico*/
-                    if (typeof btnConf["ico"] == "string") {
+                    if (typeof btnConf["ico"] === "string") {
                         var ico = $("<i/>").addClass(btnConf["ico"]);
                         $(btn_span).prepend($(ico));
                     }
@@ -167,7 +169,7 @@ define(["jquery", "Kimo.Observable"], function (jquery, Observable) {
                 $(template).find(this._settings.itemContainerClass).css({
                     "margin-top": "2px",
                     "margin-bottom": "2px",
-                    width: "100%",
+                    width: "98%",
                     height: "99%"
                 });
                 $(template).css(css);
