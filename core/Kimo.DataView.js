@@ -206,7 +206,7 @@ define(["jquery", "Kimo.Observable"], function (jquery, Observable) {
         /* prototype */
         DataView.prototype.setData = function (data, updateContent) {
             this.data = data;
-            if (updateContent) {
+            if (updateContent) {                
                 this.reset();
                 this.addItem(data);
             }
@@ -230,6 +230,7 @@ define(["jquery", "Kimo.Observable"], function (jquery, Observable) {
         this._draw(item);
         this.trigger("afterRender", {});
     }
+    
     DataView.prototype.reset = function () {
         this.itemContainer.empty();
     }

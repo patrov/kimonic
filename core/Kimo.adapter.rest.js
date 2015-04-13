@@ -31,7 +31,7 @@ define(["Kimo.Utils","Kimo.ModelAdapter"], function(Utils, AdapterRegistry){
                 type: "POST",
                 success: function(response) {
                     if(self.settings.envelope) {
-                        response = response[self.settings.evelope];
+                        response = response[self.settings.envelope];
                     }
                     model.setUid(response.uid);
                     if (typeof callbacks.success == "function") {

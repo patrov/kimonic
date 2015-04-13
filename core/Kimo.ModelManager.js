@@ -118,7 +118,10 @@ define(["Kimo.Observable", "jquery"], function(Observable, jQuery) {
                 data._reftoRepository = this;
             },
                     
-            populateData: function(data) {
+            setData: function(data, updateData) {
+                if (!updateData) {
+                    this.reset();
+                }
                 var container = [],
                         resultKey,
                         entity,
@@ -128,7 +131,7 @@ define(["Kimo.Observable", "jquery"], function(Observable, jQuery) {
                         entity = this.create(data[resultKey], triggerEvent, false);
                         container.push($.extend(true, {}, entity));
                     }
-                }
+                }                
                 return container;
             },
             find: function(entityId, callback) {
@@ -176,10 +179,16 @@ define(["Kimo.Observable", "jquery"], function(Observable, jQuery) {
             getName: function() {
                 return this.repositoryName;
             },
+            
             update: function() {
                 return this.add.apply(this, arguments);
             }, //take a look at entity save
-
+            
+            reset: function () {
+                this.entities = {};
+                this.cidSidMap = {};
+            },
+                    
             add: function(content, triggerEvent, persist) {
                 triggerEvent = (typeof triggerEvent == "boolean") ? triggerEvent : true;
                 persist = (typeof persist == "boolean") ? persist : true;

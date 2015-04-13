@@ -4,7 +4,7 @@ define([], function () {
         var pathInfos = name.split('.'),
             pos = pathInfos[1].search('Activity'),
             activityName = pathInfos[1].substring(0, pos);
-            return pathInfos[0].toLowerCase()+'/templates/'+activityName.toLowerCase()+'.'+pathInfos[2]+"."+"html";
+            return pathInfos[0].toLowerCase()+'/templates/'+activityName.toLowerCase()+'.'+pathInfos[2]+".html";
     };
     return {
 
