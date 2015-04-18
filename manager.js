@@ -9,12 +9,16 @@ define([], function () {
     return {
         load: function (managerName, req, onload, config) {
             var infos = managerName.split(":"),
+                    managerName;
+                if (infos.length!==2) {
+                    onload.error("managerName is not valid! [app:manager] format is expected. ["+managerName+"] was provided.");
+                }
                 managerName = infos[1].toLowerCase()+".manager.js";
                 fullPath = config.baseUrl + 'apps/' + infos[0].toLowerCase() +'/managers/'+ managerName;
             req([fullPath], function (manager) {
-                console.log(manager);
                 onload(manager);
             }, function (reason) {
+                console.log(reason);
                 onload.error(reason);
             });
         }
