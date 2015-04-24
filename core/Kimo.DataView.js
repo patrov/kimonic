@@ -1,14 +1,15 @@
 define(["jquery", "Kimo.Observable"], function (jquery, Observable) {
     var $ = jquery, _template, _itemRenderer,
         DataView = function (settings) {
-            _template = "<div class='kimo ui datalist'>\n\
-                        <div class='datalist-header'>\n\
-                        <div class='toolbar btn-group'></div>\n\
-                        </div>\n\
-                        <div class='contentwrapper nano'><div class='itemcontainer nano-content'></div></div>\n\
-                        <div class='footer'></div>\n\
-                     </div>";
-            _itemRenderer = "", this._settings = {
+            _template = "<div class='kimo ui datalist'>"
+                            +"<div class='datalist-header'>"
+                                +"<div class='toolbar btn-group'></div>"
+                            +"</div>"
+                            +"<div class='contentwrapper nano'><div class='itemcontainer nano-content'></div></div>"
+                            +"<div class='footer'></div>"
+                        +"</div>";
+            _itemRenderer = "",
+            this._settings = {
                 title: "",
                 data: {},
                 idKey: "_cid",
@@ -166,6 +167,9 @@ define(["jquery", "Kimo.Observable"], function (jquery, Observable) {
                     width: this._settings.width,
                     height: this._settings.height
                 };
+                if(this._settings.maxHeight){
+                    css.height = this._settings.maxHeight;
+                }
                 $(template).find(this._settings.itemContainerClass).css({
                     "margin-top": "2px",
                     "margin-bottom": "2px",
@@ -206,7 +210,7 @@ define(["jquery", "Kimo.Observable"], function (jquery, Observable) {
         /* prototype */
         DataView.prototype.setData = function (data, updateContent) {
             this.data = data;
-            if (updateContent) {                
+            if (updateContent) {
                 this.reset();
                 this.addItem(data);
             }
@@ -230,7 +234,7 @@ define(["jquery", "Kimo.Observable"], function (jquery, Observable) {
         this._draw(item);
         this.trigger("afterRender", {});
     }
-    
+
     DataView.prototype.reset = function () {
         this.itemContainer.empty();
     }
@@ -259,6 +263,7 @@ define(["jquery", "Kimo.Observable"], function (jquery, Observable) {
     DataView.prototype.selectItem = function () {
         alert("selector");
     }
+
     DataView.prototype.updateItemActions = function (item, actions) {
         if (!item) return;
         this._cleanItemActions();
