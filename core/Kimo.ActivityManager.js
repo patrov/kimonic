@@ -196,7 +196,7 @@ define(["Kimo.Utils", "jquery", 'require'], function(Utils, jQuery, require) {
                     activityInfos.state = 1;
                     dfd.resolve(activityInfos);
                 }).fail(function (reason) {
-                    console.log("reason", reason);
+                    console.log("StartActivityException ", reason);
                     dfd.reject(reason);
                 });
             }
@@ -251,6 +251,7 @@ define(["Kimo.Utils", "jquery", 'require'], function(Utils, jQuery, require) {
                 throw "ErrorWhileInvokingMethod " + activity;
             }
             catch (e) {
+                console.log(e);
                 throw e;
             }
 

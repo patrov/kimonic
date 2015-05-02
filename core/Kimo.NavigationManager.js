@@ -100,7 +100,8 @@ define(["Kimo.ActivityManager","vendor.crossroads.main", "vendor.handlebars", "h
 
             var cleanUrl = routeInfos.url.replace("#/","");
                 //var params =  $.extend(true,params,this._parameterBags[cleanUrl]);
-            ActivityManager.startActivity(routeActions[0],{},this._appName).done(function (activityInfos) {
+            ActivityManager.startActivity(routeActions[0], {}, this._appName).done(function (activityInfos) {
+                
                 self._currentActivityInfos = activityInfos;
                 var viewName = activityInfos.instance.view.name;
                 self._viewManager.gotoView(viewName);
@@ -164,6 +165,7 @@ define(["Kimo.ActivityManager","vendor.crossroads.main", "vendor.handlebars", "h
                 }
 
             }catch(e){
+                console.log(e);
                 throw e;
             }
         }

@@ -14,10 +14,9 @@ define([], function () {
             req([fullPath], function () {
                 onload({path: infos[0].toLowerCase()+'/activities/'+activityname+'.js'});
             }, function (reason) {
+                console.log("reason", reason);
                 onload.error(reason);
             });
         }
-    }
-
-
+    };
 });

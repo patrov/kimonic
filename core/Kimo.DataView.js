@@ -286,7 +286,7 @@ define(["jquery", "Kimo.Observable"], function (jquery, Observable) {
     }
     DataView.prototype.render = function (container) {
         this._draw(this.data);
-        $(container).html(this.template);
+        $(container).html(this.template);        
     }
     Kimo.DataView = DataView;
     return DataView;
