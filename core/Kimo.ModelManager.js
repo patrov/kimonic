@@ -67,7 +67,7 @@ define(["Kimo.Observable", "jquery"], function(Observable, jQuery) {
                 }
                 return results;
             },
-                    
+
             toJson: function() {
                 var results = [];
                 for(var entity in this.entities) {
@@ -75,7 +75,7 @@ define(["Kimo.Observable", "jquery"], function(Observable, jQuery) {
                 }
                 return results;
             },
-                    
+
             /*call is made via adapter*/
             get: function(index) {
                 var compteur = 0;
@@ -117,7 +117,7 @@ define(["Kimo.Observable", "jquery"], function(Observable, jQuery) {
                 var data = new this.model(modelData);
                 data._reftoRepository = this;
             },
-                    
+
             setData: function(data, updateData) {
                 if (!updateData) {
                     this.reset();
@@ -131,7 +131,7 @@ define(["Kimo.Observable", "jquery"], function(Observable, jQuery) {
                         entity = this.create(data[resultKey], triggerEvent, false);
                         container.push($.extend(true, {}, entity));
                     }
-                }                
+                }
                 return container;
             },
             find: function(entityId, callback) {
@@ -146,6 +146,7 @@ define(["Kimo.Observable", "jquery"], function(Observable, jQuery) {
                 return def;
             },
             create: function(modelData, triggerEvents, persist) {
+                var dfd = new $.Deferred();
                 triggerEvents = (typeof triggerEvents === "boolean") ? triggerEvents : true;
                 persist = (typeof persist === "boolean") ? persist : true;
                 if (typeof this.model !== "function") {
@@ -179,16 +180,16 @@ define(["Kimo.Observable", "jquery"], function(Observable, jQuery) {
             getName: function() {
                 return this.repositoryName;
             },
-            
+
             update: function() {
                 return this.add.apply(this, arguments);
             }, //take a look at entity save
-            
+
             reset: function () {
                 this.entities = {};
                 this.cidSidMap = {};
             },
-                    
+
             add: function(content, triggerEvent, persist) {
                 triggerEvent = (typeof triggerEvent == "boolean") ? triggerEvent : true;
                 persist = (typeof persist == "boolean") ? persist : true;
@@ -369,7 +370,7 @@ define(["Kimo.Observable", "jquery"], function(Observable, jQuery) {
                     error: function() {
                     }
                 }
-                return _adapter.invoke("update", this, this.name, handlers); // move to persist return promeess
+                return _adapter.invoke("update", this, this.name, handlers); // move to persist return promise
             },
             remove: function() {
                 var self = this;
