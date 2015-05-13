@@ -146,7 +146,6 @@ define(["Kimo.Observable", "jquery"], function(Observable, jQuery) {
                 return def;
             },
             create: function(modelData, triggerEvents, persist) {
-                var dfd = new $.Deferred();
                 triggerEvents = (typeof triggerEvents === "boolean") ? triggerEvents : true;
                 persist = (typeof persist === "boolean") ? persist : true;
                 if (typeof this.model !== "function") {
@@ -156,10 +155,8 @@ define(["Kimo.Observable", "jquery"], function(Observable, jQuery) {
                 data._reftoRepository = this;
                 if (triggerEvents)
                     this.trigger("change", "create", data);
-                this.add(data, false, persist);
-                if (persist)
-                    _adapter.invoke("create", data, this.getName(), {}); //handle callback here
-                return data;
+                return this.add(data, false, persist);
+
             },
             removeByCid: function(cid) {
                 var entity = this.entities[cid];

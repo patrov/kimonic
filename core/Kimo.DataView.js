@@ -1,4 +1,4 @@
-define(["jquery", "Kimo.Observable"], function (jquery, Observable) {
+define(["jquery", "Kimo.Observable", "nanoscroller"], function (jquery, Observable, nanoScroller) {
     var $ = jquery, _template, _itemRenderer,
         DataView = function (settings) {
             _template = "<div class='kimo ui datalist'>"
@@ -24,9 +24,11 @@ define(["jquery", "Kimo.Observable"], function (jquery, Observable) {
                 width: 500,
                 appendToTop: false,
                 height: 520,
+                autoGrow: true,
+                speed: 200,
                 allowMultipleSelection: false,
                 showHeader: true,
-                showFooter: true,
+                showFooter: false,
                 data: [] //data should be a repository
             };
             this._init = function (settings) {
@@ -165,22 +167,33 @@ define(["jquery", "Kimo.Observable"], function (jquery, Observable) {
                 var template = $(_template).clone();
                 var css = {
                     width: this._settings.width,
-                    height: this._settings.height
+                    height: this._settings.height,
+                    overflow: "hidden"
                 };
                 if(this._settings.maxHeight){
                     css.height = this._settings.maxHeight;
                 }
+
+                if (this._settings.autoGrow) {
+                    delete css.height;
+                    css.maxHeight = this._settings.height;
+                    /*compute here. item.size > maxHeight */
+                }
+
                 $(template).find(this._settings.itemContainerClass).css({
                     "margin-top": "2px",
                     "margin-bottom": "2px",
                     width: "98%",
                     height: "99%"
                 });
+
                 $(template).css(css);
-                $(template).find(".footer").css({
-                    height: "30px",
-                    width: "100%"
-                });
+                if (this._settings.showFooter) {
+                    $(template).find(".footer").css({
+                      height: "30px",
+                      width: "100%"
+                  });
+                }
                 return template;
             }
             /* called when new data arrives */
@@ -203,10 +216,16 @@ define(["jquery", "Kimo.Observable"], function (jquery, Observable) {
                 }
                 var addFunc = (this._settings.appendToTop) ? "prepend" : "append";
                 this.itemContainer[addFunc]($(container));
+                this.updateMarkup();
             }
             /* initialiser */
             this._init(settings);
         }
+
+        DataView.prototype.updateMarkup = function () {
+            console.log($(this.itemContainer).height());
+        }
+
         /* prototype */
         DataView.prototype.setData = function (data, updateContent) {
             this.data = data;
