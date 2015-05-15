@@ -29,6 +29,7 @@ Kimo.require = (function(r) {
             "manager": "kimonic/manager",
             "template": "kimonic/template",
             "text": "kimonic/vendor/requirejs-text/text",
+            "nanoscroller": "kimonic/vendor/nanoscroller/bin/javascripts/jquery.nanoscroller.min",
             "Kimo.ViewStack": "kimonic/core/Kimo.ViewStack",
             "jquery": "kimonic/vendor/jquery/dist/jquery.min",
             "signals": "kimonic/vendor/signals/dist/signals.min",
@@ -82,5 +83,6 @@ define("Kimo/core",
         Kimo.jquery = jQuery.noConflict(true);
          Kimo.jQuery =  Kimo.jquery;
         $ = Kimo.jquery;
+        Kimo.jQuery =  Kimo.jquery;
         return Kimo;
     });
