@@ -1,4 +1,4 @@
-define(["Kimo.Utils", "jquery", 'require'], function(Utils, jQuery, require) {
+define(["Kimo.Utils", "Kimo.Observable", "jquery", 'require'], function(Utils, Observable, jQuery) {
 
     var ActivityManager = (function(c, b) {
         var g = []; //activities container
@@ -13,7 +13,7 @@ define(["Kimo.Utils", "jquery", 'require'], function(Utils, jQuery, require) {
                 _createActivityMap(j.appname);
                 _context[j.appname].viewManager = j.viewManager;
             }
-        // c.extend(true,h,j);
+            // c.extend(true,h,j);
         };
 
         var _createActivityMap = function(appname) {
@@ -44,6 +44,8 @@ define(["Kimo.Utils", "jquery", 'require'], function(Utils, jQuery, require) {
                         this.viewManager = _context[this.appname].viewManager;
                     }
                 }
+                Observable.extend(this);
+                this.registerEvents(["viewReady"]);
                 this.navigateTo = _getRouter(this.appname);
                 this.initView();
                 this.exposedActions = [];
@@ -77,6 +79,20 @@ define(["Kimo.Utils", "jquery", 'require'], function(Utils, jQuery, require) {
                     throw "MethodIsNotExposed: " + k;
                 }
             },
+                    
+            setLoadedTemplate: function(template) {
+                this.loadedTemplate = template;
+            },
+                    
+            getLoadedTemplate: function() {
+                return this.loadedTemplate;
+            },
+            
+            triggerViewReady: function (render) {
+                this.trigger("viewReady", render);
+                this.detach("viewReady");
+            },
+                    
             getContent: function(url) {
                 var result = false;
                 $.ajax({
@@ -175,17 +191,17 @@ define(["Kimo.Utils", "jquery", 'require'], function(Utils, jQuery, require) {
 
         var _start = function(activityName, params, appname) {
             var k = false,
-            dfd = new jQuery.Deferred(),
-            activityInfos = _findActivity(activityName);
-            if(activityInfos) {
-                if(typeof activityInfos.instance.onResume === "function") {
+                    dfd = new jQuery.Deferred(),
+                    activityInfos = _findActivity(activityName);
+            if (activityInfos) {
+                if (typeof activityInfos.instance.onResume === "function") {
                     activityInfos.instance.onResume(params);
                     activityInfos.state = 1;
                     dfd.resolve(activityInfos);
                 }
             }
             if (!activityInfos) {
-                Utils.requireWithPromise(['activity!'+appname+':'+activityName]).done(function (response) {
+                Utils.requireWithPromise(['activity!' + appname + ':' + activityName]).done(function(response) {
                     activityInfos = _findActivity(activityName);
                     if (!activityInfos) {
                         dfd.reject(response);
@@ -195,8 +211,7 @@ define(["Kimo.Utils", "jquery", 'require'], function(Utils, jQuery, require) {
                     }
                     activityInfos.state = 1;
                     dfd.resolve(activityInfos);
-                }).fail(function (reason) {
-                    console.log("StartActivityException ", reason);
+                }).fail(function(reason) {
                     dfd.reject(reason);
                 });
             }
@@ -219,7 +234,7 @@ define(["Kimo.Utils", "jquery", 'require'], function(Utils, jQuery, require) {
 
         };
 
-        var _count = function(){
+        var _count = function() {
             return g.length;
         }
 
@@ -265,7 +280,7 @@ define(["Kimo.Utils", "jquery", 'require'], function(Utils, jQuery, require) {
             stopActivity: _stop,
             find: _findActivity,
             setRouter: _setRouter,
-            count : _count
+            count: _count
         }
     })(jQuery, window);
     Kimo.ActivityManager = ActivityManager;

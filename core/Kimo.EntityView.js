@@ -1,4 +1,4 @@
-define(["jquery","Kimo.Observable"],function(jquery,Observable){    
+define(["jquery", "Kimo.Observable"], function (jquery, Observable) {    
     var $ = jquery;
     var _entityViewContainer = {};
     var _handleEvents = function(events){
@@ -13,7 +13,7 @@ define(["jquery","Kimo.Observable"],function(jquery,Observable){
                 if( selector === "root"){
                     $(self.root).bind(event,callback);
                 }else{
-                    $(self.root).delegate($.trim(selector),event,callback);
+                    $(self.root).on(event, $.trim(selector), callback);
                 }
             }
         });

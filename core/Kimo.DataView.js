@@ -24,9 +24,10 @@ define(["jquery", "Kimo.Observable"], function (jquery, Observable) {
                 width: 500,
                 appendToTop: false,
                 height: 520,
+                autoGrow: true,
                 allowMultipleSelection: false,
                 showHeader: true,
-                showFooter: true,
+                showFooter: false,
                 data: [] //data should be a repository
             };
             this._init = function (settings) {
@@ -170,6 +171,10 @@ define(["jquery", "Kimo.Observable"], function (jquery, Observable) {
                 if(this._settings.maxHeight){
                     css.height = this._settings.maxHeight;
                 }
+                
+                if(this._settings.autoGrow) { 
+                    delete css.height;
+                } //autoGrow to a size
                 $(template).find(this._settings.itemContainerClass).css({
                     "margin-top": "2px",
                     "margin-bottom": "2px",
@@ -177,10 +182,12 @@ define(["jquery", "Kimo.Observable"], function (jquery, Observable) {
                     height: "99%"
                 });
                 $(template).css(css);
-                $(template).find(".footer").css({
-                    height: "30px",
-                    width: "100%"
-                });
+                if (this._settings.showFooter) {
+                    $(template).find(".footer").css({
+                        height: "30px",
+                        width: "100%"
+                    });
+                }
                 return template;
             }
             /* called when new data arrives */
@@ -207,6 +214,11 @@ define(["jquery", "Kimo.Observable"], function (jquery, Observable) {
             /* initialiser */
             this._init(settings);
         }
+        
+        DataView.prototype.updateSize = function () {
+            //show scrollbar it
+        }
+        
         /* prototype */
         DataView.prototype.setData = function (data, updateContent) {
             this.data = data;

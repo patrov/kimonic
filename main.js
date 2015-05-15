@@ -80,6 +80,7 @@ define("Kimo/core",
     //  "Form.image"
     ], function(require, jQuery) {
         Kimo.jquery = jQuery.noConflict(true);
+         Kimo.jQuery =  Kimo.jquery;
         $ = Kimo.jquery;
         return Kimo;
     });

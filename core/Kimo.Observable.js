@@ -53,12 +53,18 @@ define(["Kimo.Utils"], function(Utils) {
         _registerEvents: function(events) {
             _registerEvents.call(this, events);
         },
+                
         detach: function(eventName, callback) {
             if (eventName in this._eventsContainer) {
+                if (!callbacks) {
+                   this._eventsContainer[eventName] = []; 
+                   return this;
+                }
                 var callbacks = this._eventsContainer[eventName];
                 $.each(callbacks, function(i, func) {
-                    if (func == callback)
+                    if (func == callback) {
                         callbacks[i] = null;
+                    }
                 });
             }
             return this;

@@ -10,6 +10,7 @@ define(["Kimo.ActivityManager","vendor.crossroads.main", "vendor.handlebars", "h
         _activityManager = null,
         _currentActivityInfos = null,
         _viewManager = null,
+        _router = null,
         _routeInfos = {};
 
        /**
@@ -20,8 +21,8 @@ define(["Kimo.ActivityManager","vendor.crossroads.main", "vendor.handlebars", "h
             _activityManager = _settings.activitiesManager || false;
             _viewManager = _settings.viewManager||false;
             _currentActivityInfos = _settings.currentActivityInfos;
-            var router =  new Router(_activityManager,_viewManager,_currentActivityInfos,_settings.appName);//oneRoute per application
-            return router;
+             _router =  new Router(_activityManager,_viewManager,_currentActivityInfos,_settings.appName);//oneRoute per application
+            return _router;
         };
 
         var _listen = function(){
@@ -116,12 +117,13 @@ define(["Kimo.ActivityManager","vendor.crossroads.main", "vendor.handlebars", "h
                 if (typeof self._currentActivityInfos.instance[activityAction] === "function") {
                     var templateInfos = routeActions.join('.');
                    require(['template!'+self._appName+'.'+templateInfos], function (template) {
-                       /* add view ... deal with [templateReady] too deal with place holder ... deal with loader */
-                    var templateContent = Handlebars.compile(template);
+                       var tpl = $(template);
+                    self._currentActivityInfos.instance.setLoadedTemplate(tpl);
                     var templateData = self._currentActivityInfos.instance[activityAction](params, self._parameterBags[cleanUrl]);
-                    var render = templateContent(templateData || {});
-                    self._currentActivityInfos.instance.view.setContent($(render));
-
+                    var templateContent = Handlebars.compile($(tpl).get(0).outerHTML); // component shoulb be ready here
+                    var render = $(templateContent(templateData || {}));
+                    self._currentActivityInfos.instance.view.setContent(render);
+                    self._currentActivityInfos.instance.triggerViewReady(render);
                    }, function () {
                         /*handle default error default error page */
                         self._currentActivityInfos.instance[activityAction](params, self._parameterBags[cleanUrl]);
@@ -140,22 +142,27 @@ define(["Kimo.ActivityManager","vendor.crossroads.main", "vendor.handlebars", "h
             var link = path;
             if($.isPlainObject(params)){
                 $.each(params,function(pattern,value){
-                    link = link.replace(pattern,value);
+                    link = link.replace('{'+pattern+'}', value);
                 });
             }
             return link;
         }
-
-        Router.prototype.navigateTo = function(route,params,linkParams){
+        
+        Router.prototype.updateRoute = function (route) {
+            history.pushState(null, null, route);
+        }
+        
+        Router.prototype.navigateTo = function(route, params, linkParams){
             try{
                 if(typeof route !=="string" || route.length ===0) throw "Route can't be null or empty!";
                 params = params || {};
                 var routeInfos = this._routesCollection[route];
-                if(!routeInfos) throw "route ["+route+"]Can't be found for ["+this._appName+"]";
+                if(!routeInfos) throw "Route ["+route+"] Can't be found for ["+this._appName+"]";
                 if("url" in routeInfos){
                     var cleanUrl = routeInfos.url.replace("#/","");
                     if(linkParams){
                         cleanUrl = this.buildLink(cleanUrl,linkParams);
+                        console.log(cleanUrl);
                     }
                     /*save parameter */
                     this._parameterBags[cleanUrl] = params;
@@ -173,9 +180,9 @@ define(["Kimo.ActivityManager","vendor.crossroads.main", "vendor.handlebars", "h
         Router.prototype.back = function(){}
 
         var publicApi = {
-            navigateTo : function(activityName,params,appname){
-                /*first stop current activity*/
-                if(_currentActivityInfos){
+            navigateTo : function(activityName, params, appname){
+                /*first stop current activity if needed --> activity Manager responsability*/
+                if (_currentActivityInfos) {
                     _activityManager.stopActivity(_currentActivityInfos);
                 }
                 _activityManager.startActivity(activityName,params).done(function (activityInfos) {
@@ -186,12 +193,15 @@ define(["Kimo.ActivityManager","vendor.crossroads.main", "vendor.handlebars", "h
             back : function(){}
         };
 
-        return{
+        return {
             init: _init,
             start: _listen,
             navigateTo : publicApi.navigateTo,
-            registerRoutes: _registerRoutes
-        }
+            registerRoutes: _registerRoutes,
+            getRouter: function () {
+                return _router;
+            }
+        };
     })(jQuery,window);
     Kimo.NavigationManager = NavigationManager;
     return NavigationManager;

@@ -157,8 +157,9 @@ define(["Kimo.Observable", "jquery"], function(Observable, jQuery) {
                 if (triggerEvents)
                     this.trigger("change", "create", data);
                 this.add(data, false, persist);
-                if (persist)
+                /*if (persist){ 
                     _adapter.invoke("create", data, this.getName(), {}); //handle callback here
+                }*/
                 return data;
             },
             removeByCid: function(cid) {
@@ -197,7 +198,7 @@ define(["Kimo.Observable", "jquery"], function(Observable, jQuery) {
                 var changeReason = (isAnUpdate) ? "update" : "create";
                 this.entities[content._cid] = content;
                 this.cidSidMap[content.getUid()] = content._cid;
-                if (typeof content._reftoRepository == "undefined") {
+                if (typeof content._reftoRepository === "undefined") {
                     content._reftoRepository = this;
                 }
                 if (triggerEvent) {
