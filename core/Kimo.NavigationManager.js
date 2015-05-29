@@ -3,7 +3,7 @@
  * must create a router instance
  *
  **/
-define(["Kimo.ActivityManager","vendor.crossroads.main", "vendor.handlebars", "hasher"],function(ActivityManager, crossroads, Handlebars, hasher){
+define(["Kimo.ActivityManager", "Kimo.Observable", "vendor.crossroads.main", "vendor.handlebars", "hasher"],function(ActivityManager, Observable, crossroads, Handlebars, hasher){
 
     var NavigationManager = (function($,global){
         var _settings = {},
@@ -73,9 +73,9 @@ define(["Kimo.ActivityManager","vendor.crossroads.main", "vendor.handlebars", "h
             });
         }
 
-        Router.prototype._handleAppLinks = function(){
+        Router.prototype._handleAppLinks = function () {
             var self = this;
-            $("body").on("click", "a", function(){
+            $("body").on("click", "a", function () {
                 var nextAction = $(this).data("action");
                 var hash = $(this).attr("href");
                 if(hash && hash.indexOf("#/")!==-1){
@@ -118,8 +118,11 @@ define(["Kimo.ActivityManager","vendor.crossroads.main", "vendor.handlebars", "h
                        /* add view ... deal with [templateReady] too deal with place holder ... deal with loader */
                     var templateContent = Handlebars.compile(template);
                     var templateData = self._currentActivityInfos.instance[activityAction](params, self._parameterBags[cleanUrl]);
-                    var render = templateContent(templateData || {});
-                    self._currentActivityInfos.instance.view.setContent($(render));
+                    var render = $(templateContent(templateData || {}));
+                    Observable._useEvtCtn = false;
+                    Observable.registerEvents("viewReady");
+                    Observable.trigger("viewReady", render);
+                    self._currentActivityInfos.instance.view.setContent(render);
 
                    }, function () {
                         /*handle default error default error page */

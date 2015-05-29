@@ -1,5 +1,5 @@
 /* app instance should use they own instance of */
-define(["Kimo.NavigationManager", "Kimo.ActivityManager", "Kimo.ViewStack"], function (NavigationManager, ActivityManager, ViewStack) {
+define(["Kimo.NavigationManager", "Kimo.ActivityManager", "Kimo.ViewStack" , "Kimo.ComponentHandler"], function (NavigationManager, ActivityManager, ViewStack, ComponentHandler) {
     var ApplicationManager = (function (e, c) {
         var d = {}; //activities container
         /* Abstract App */
@@ -8,18 +8,24 @@ define(["Kimo.NavigationManager", "Kimo.ActivityManager", "Kimo.ViewStack"], fun
             this.viewManager = new ViewStack();
             this.viewManager.configure(this.getParam("viewSettings"));
 
-
-
             this.router = null; // save an instance of Navigation Manager
             this.activitiesMap = [];
             this.activityManager = null;
+            this.handleComponents();
         };
+
         AbstractApplication.prototype.onError = function (reason) {
             console.log("default onError " + reason);
         };
+
         AbstractApplication.prototype.setActivityManager = function (activityMng) {
             this.activityManager = activityMng;
         };
+
+        AbstractApplication.prototype.handleComponents = function () {
+            ComponentHandler.init({});
+        }
+
         AbstractApplication.prototype.getParam = function (key) {
             var result = false;
             if (key in this._settings) {
@@ -77,7 +83,7 @@ define(["Kimo.NavigationManager", "Kimo.ActivityManager", "Kimo.ViewStack"], fun
                     throw new Error("Activity can't be null")
                 }
                  /* Activity Manager will create a context
-                  * for each app  
+                  * for each app
                  * */
                 var activityManager = ActivityManager.init({
                     appname: i,
@@ -85,7 +91,7 @@ define(["Kimo.NavigationManager", "Kimo.ActivityManager", "Kimo.ViewStack"], fun
                 });
                 d[i].setActivityManager(ActivityManager);
                 var currentRoute = window.location.hash;
-                
+
                 /* Init Router and handle all the app routes */
                 this.router = NavigationManager.init({
                     activitiesManager: ActivityManager,
