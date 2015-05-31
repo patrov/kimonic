@@ -1,4 +1,4 @@
-/* 
+/*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  * Make an object Observable
@@ -31,7 +31,7 @@ define(["Kimo.Utils"], function(Utils) {
 
             this._eventsContainer[eventName].push(callback);
         },
-        
+
         trigger: function(eventName) {
             if (eventName in this._eventsContainer) {
                 for (var func in this._eventsContainer[eventName]) {
@@ -47,9 +47,11 @@ define(["Kimo.Utils"], function(Utils) {
                 }
             }
         },
+
         registerEvents: function(events) {
             _registerEvents.call(this, events);
         },
+
         _registerEvents: function(events) {
             _registerEvents.call(this, events);
         },

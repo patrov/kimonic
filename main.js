@@ -7,10 +7,11 @@ var Kimo = Kimo || {};
 Kimo.require = (function(r) {
     r.config({
         baseUrl: appPath+"js/",
-		urlArgs: 'rand=' + Math.random(),
+        urlArgs: 'rand=' + Math.random(),
         catchError:true,
         paths: {
             "Kimo.ActivityManager": "kimonic/core/Kimo.ActivityManager",
+            "Kimo.ComponentHandler": "kimonic/core/Kimo.ComponentHandler",
             "Kimo.ApplicationManager": "kimonic/core/Kimo.ApplicationManager",
             "Kimo.DataView": "kimonic/core/Kimo.DataView",
             "Kimo.ModelManager": "kimonic/core/Kimo.ModelManager",
@@ -58,6 +59,7 @@ Kimo.require = (function(r) {
 define("Kimo/core",
     ["require", "jquery",
     "Kimo.Observable",
+    "Kimo.ComponentHandler",
     "Kimo.Utils",
     "Kimo.ViewStack",
     "Kimo.ActivityManager",
