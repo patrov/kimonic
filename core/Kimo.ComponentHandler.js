@@ -24,14 +24,15 @@ define(["jquery" ,"Kimo.Observable"], function (jQuery, Observable) {
         },
 
         init = function (config) {
-            settings = Kimo.jQuery.extend({}, settings, config);
-            Observable.on("viewReady", function () {
-               console.log("view Ready");
+            settings = jQuery.extend({}, settings, config);
+            Observable.registerEvents(["viewReady"]);
+            Observable.on("viewReady", function (view) {
+                //parse here
            });
         },
 
         parseTag = function (tags) {
-            jQuery(tags)
+            jQuery(tags);
         },
 
         parseTemplate = function (template) {
@@ -45,7 +46,7 @@ define(["jquery" ,"Kimo.Observable"], function (jQuery, Observable) {
 
         return {
             init: init
-        }
+        };
     })();
     return ComponentHandler;
     Kimo.ComponentHandler = ComponentHandler;
