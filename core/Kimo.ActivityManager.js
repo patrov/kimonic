@@ -21,7 +21,7 @@ define(["Kimo.Utils", "Kimo.Observable", "jquery", 'require'], function(Utils, O
                 activities: [],
                 viewManager: null,
                 router: null
-            }
+            };
         }
 
         var _setRouter = function(router) {

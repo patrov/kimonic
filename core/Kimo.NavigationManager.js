@@ -118,6 +118,7 @@ define(["Kimo.ActivityManager", "Kimo.Observable", "vendor.crossroads.main", "ve
                     var templateInfos = routeActions.join('.');
                    require(['template!'+self._appName+'.'+templateInfos], function (template) {
                        var tpl = $(template);
+                       
                     self._currentActivityInfos.instance.setLoadedTemplate(tpl);
                     var templateData = self._currentActivityInfos.instance[activityAction](params, self._parameterBags[cleanUrl]);
                     var templateContent = Handlebars.compile($(tpl).get(0).outerHTML); // component shoulb be ready here
