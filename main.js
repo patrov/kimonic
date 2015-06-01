@@ -27,6 +27,7 @@ Kimo.require = (function(r) {
             "Kimo.TemplateRenderer": "kimonic/core/Kimo.TemplateManager",
             "Kimo.Utils": "kimonic/core/Kimo.Utils",
             "activity": "kimonic/activity",
+            "component": "kimonic/component",
             "manager": "kimonic/manager",
             "template": "kimonic/template",
             "text": "kimonic/vendor/requirejs-text/text",

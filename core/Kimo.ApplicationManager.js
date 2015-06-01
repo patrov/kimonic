@@ -23,6 +23,7 @@ define(["Kimo.NavigationManager", "Kimo.ActivityManager", "Kimo.ViewStack" , "Ki
         };
 
         AbstractApplication.prototype.handleComponents = function () {
+            console.log(this);
             ComponentHandler.init({});
         }
 

@@ -4,43 +4,77 @@
  */
 
 
-define(["jquery" ,"Kimo.Observable"], function (jQuery, Observable) {
+define(["require", "Kimo.Utils", "jquery" ,"Kimo.Observable"], function (require, Utils, jQuery, Observable) {
 
     /* find all */
         jQuery.extend(jQuery.expr[':'], {
-            kimo: function (e) {
-                return /^kimo\-/i.test(this.nodeName);
+            kimo: function (node) {
+                return /^kimo\-/i.test(node.nodeName);
             }
     });
 
 
     var ComponentHandler = (function () {
         var settings = {
-            marker: "kimo"
+            marker: "kimo",
+            renderTimeout : 3000,
+            loadingMsg: "Loading"
         },
 
-        loadComponent = function () {
 
+        handle = function (componentInfos) {
+            try {
+                var componentName = "component!" + componentInfos.params.application + ':' + componentInfos.component;
+
+                Utils.requireWithPromise([componentName]).done(function (component) {
+                    checkComponent(component);
+                    component.init(componentInfos);
+                    jQuery(componentInfos.node).replaceWith(component.render());
+
+                }).fail(function (response) {
+                   console.log(response);
+                });
+
+            } catch (e) {
+                console.log("Error Blaze", e);
+            }
+        },
+
+        checkComponent = function (component) {
+            if (!component.hasOwnProperty("init")) {
+                throw new Error("ComponentException. Component must provide an [init] function.");
+            }
+            if (!component.hasOwnProperty("render")) {
+                throw new Error("ComponentException. Component must provide an [render] function.");
+            }
         },
 
         init = function (config) {
+            /* register marker here */
             settings = jQuery.extend({}, settings, config);
             Observable.registerEvents(["viewReady"]);
             Observable.on("viewReady", function (view) {
-                //parse here
+                parseTemplate(view)
            });
         },
 
-        parseTag = function (tags) {
-            jQuery(tags);
+        parseTag = function (node) {
+            var tagInfos = {},
+                infos = node.nodeName.split("-");
+            tagInfos.params = jQuery(node).data();
+            tagInfos.component = infos[1].toLowerCase();
+            tagInfos.node = node;
+            tagInfos.content = jQuery(node).html();
+            return tagInfos;
         },
 
         parseTemplate = function (template) {
          var componentTags = jQuery(template).find(':kimo'),
              component;
+
          jQuery.each(componentTags, function (i) {
-             component = componentTags[i];
-             handle(component);
+             componentTag = componentTags[i];
+             handle(parseTag(componentTag));
          });
         };
 
