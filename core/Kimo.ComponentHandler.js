@@ -15,12 +15,26 @@ define(["require", "Kimo.Utils", "jquery" ,"Kimo.Observable"], function (require
 
 
     var ComponentHandler = (function () {
+
         var settings = {
             marker: "kimo",
             renderTimeout : 3000,
             loadingMsg: "Loading"
         },
 
+        componentsList = {name : [],  },
+
+
+        /* keep instance, know when a component is ready it's ready
+         *
+         * ComponentHandler.get("pager")
+         * ComponentHandler.on("page:id", "selected", handler);
+         *
+         * */
+
+        on = function (componentName, eventName, handler) {
+
+        },
 
         handle = function (componentInfos) {
             try {
@@ -29,6 +43,8 @@ define(["require", "Kimo.Utils", "jquery" ,"Kimo.Observable"], function (require
                 Utils.requireWithPromise([componentName]).done(function (component) {
                     checkComponent(component);
                     component.init(componentInfos);
+                    /* initialize */
+                    handleComponentReady(component)
                     jQuery(componentInfos.node).replaceWith(component.render());
 
                 }).fail(function (response) {
@@ -38,6 +54,10 @@ define(["require", "Kimo.Utils", "jquery" ,"Kimo.Observable"], function (require
             } catch (e) {
                 console.log("Error Blaze", e);
             }
+        },
+
+        handleComponentReady = function (component) {
+            /* when component is ready execute execute execute message*/
         },
 
         checkComponent = function (component) {
