@@ -22,7 +22,7 @@ define(["require", "Kimo.Utils", "jquery" ,"Kimo.Observable"], function (require
             loadingMsg: "Loading"
         },
 
-        componentsList = {name : [],  },
+        availableComponents = [{id:"", tagname:"page", instance: {}}],
 
 
         /* keep instance, know when a component is ready it's ready
@@ -36,6 +36,11 @@ define(["require", "Kimo.Utils", "jquery" ,"Kimo.Observable"], function (require
 
         },
 
+        registerComponent = function (infos) {
+            availableComponents.push(infos);
+        },
+
+
         handle = function (componentInfos) {
             try {
                 var componentName = "component!" + componentInfos.params.application + ':' + componentInfos.component;
@@ -44,7 +49,9 @@ define(["require", "Kimo.Utils", "jquery" ,"Kimo.Observable"], function (require
                     checkComponent(component);
                     component.init(componentInfos);
                     /* initialize */
-                    handleComponentReady(component)
+                    componentInfos.instance = component;
+                    componentInfos.id = component.getId();
+                    handleComponentReady(componentInfos);
                     jQuery(componentInfos.node).replaceWith(component.render());
 
                 }).fail(function (response) {
@@ -56,8 +63,10 @@ define(["require", "Kimo.Utils", "jquery" ,"Kimo.Observable"], function (require
             }
         },
 
-        handleComponentReady = function (component) {
-            /* when component is ready execute execute execute message*/
+        /*when component is ready */
+        handleComponentReady = function (componentInfos) {
+            availableComponents.push(componentInfos);
+            console.log(componentInfos);
         },
 
         checkComponent = function (component) {
