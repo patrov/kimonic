@@ -33,7 +33,8 @@ define(["require", "Kimo.Utils", "jquery" ,"Kimo.Observable"], function (require
          * */
 
         on = function (componentName, eventName, handler) {
-
+            /* permanent subscribe : subscribers that come after an event has been fired will still be notified */
+            Mediator.permanentSubscribe("component", eventName, handler);
         },
 
         registerComponent = function (infos) {
