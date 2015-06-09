@@ -1,79 +1,66 @@
-/*** iterator ***/
-var Iterator = function (data) {
+define(['Kimo.Iterator', 'jquery'], function (Iterator, jQuery) {
 
-    this.data = data;
-    this.cursor = 0;
+    var TaskQueue = function () {
 
-    if (this.hasNext !== "function") {
+        var settings = {
+            tick : 800,
+            processingHandler : jQuery.noop
+        };
 
-        Iterator.prototype.hasNext = function () {
-            return this.data.length > this.cursor;
-        }
-    }
-
-    Iterator.prototype.next = function () {
-        var data = this.data[this.cursor];
-        this.cursor = this.cursor + 1;
-        console.log("cursor : " + this.cursor);
-        return data;
-    }
-
-    Iterator.prototype.rewind = function () {
-        this.cursor = 0;
-    }
-
-};
-
-Iterator.create = function (collection) {
-    if (Array.isArray(collection)) {
-        return new Iterator(collection);
-    }
-
-    throw "IteratorException: collection should be an array.";
-}
-
-
-/*** iterator ***/
-var TaskQueue = function () {
-
-    /* init */
-    var settings = {};
-    TaskQueue.prototype.init = function (settings) {
-        this.tasks = [];
-        this.waitDuration = 800;
-        this.intervalID = null;
-        this.isProcessing = false;
-        this.processingHandler = ( typeof settings.processingHandler === "function" ) ? settings.processingHandler : function () {
-            throw "processingHandlerException";
-        }
-    }
-
-
-    if (typeof this.add !== 'function') {
-        TaskQueue.prototype.add = function (task) {
-            this.tasks.push(task);
-        }
-    }
-
-    TaskQueue.prototype.removeTask = function (task) {}
-
-    TaskQueue.prototype.process = function () {
-        if (this.isProcessing) {
-            return false;
-        }
-        var iterator = Iterator.create(this.tasks);
-        this.intervalID = setInterval(function () {
-            if (iterator.hasNext()) {
-                console.log(iterator.next());
+        TaskQueue.prototype.init = function (userSettings) {
+            this.settings = jQuery.extend(true, settings, userSettings);
+            this.tasksList = [];
+            this.tick = this.settings.tick;
+            this.intervalID = null;
+            this.isProcessing = false;
+            this.processingHandler = ( typeof this.settings.processingHandler === "function" ) ? this.settings.processingHandler : function () {
+                throw "ProcessingHandlerException: A processingHandler";
             }
+            this.init = null;
+        }
 
-        }.bind(this), this.waitDuration);
+
+        if (typeof this.add !== 'function') {
+            TaskQueue.prototype.add = function (task) {
+                this.tasksList.push(task);
+            }
+        }
+
+        TaskQueue.prototype.removeTask = function (task) {}
+
+        TaskQueue.prototype.process = function () {
+            if (this.isProcessing) {
+                return false;
+            }
+            this.isProcessing = true; 
+            var iterator = Iterator.create(this.tasksList);
+            this.intervalID = setInterval(function () {
+                try {
+                    if (iterator.hasNext()) {
+                        this.processingHandler(iterator.next());
+                    }
+                } catch(e) {
+                    throw "ProcessException: " + e;
+                }
+
+            }.bind(this), this.tick);
+        }
+
+        TaskQueue.prototype.stop = function () {
+            clearInterval(this.intervalID);
+        }
+
+        this.init.apply(this, arguments);
     }
 
-    TaskQueue.prototype.stop = function () {
-        clearInterval(this.intervalID);
+    return {
+
+        create : function (settings) {
+            var settings = settings || {};
+            return new TaskQueue(settings);
+        },
+
+        instance : TaskQueue
     }
 
-    this.init.apply(this, arguments);
-
-}
+});
