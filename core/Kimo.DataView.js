@@ -182,9 +182,9 @@ define(["jquery", "Kimo.Observable", "nanoscroller"], function (jquery, Observab
 
                 $(template).find(this._settings.itemContainerClass).css({
                     "margin-top": "2px",
-                    "margin-bottom": "2px",
-                    width: "98%",
-                    height: "99%"
+                    "margin-bottom": "2px"
+                   // width: "98%",
+                    //height: "99%"
                 });
 
                 $(template).css(css);
