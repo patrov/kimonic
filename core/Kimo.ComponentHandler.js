@@ -103,8 +103,8 @@ define(["require", "Kimo.Utils", "jquery" ,"Kimo.Observable"], function (require
              component;
 
          jQuery.each(componentTags, function (i) {
-             componentTag = componentTags[i];
-             handle(parseTag(componentTag));
+             component = componentTags[i];
+             handle(parseTag(component));
          });
         };
 
