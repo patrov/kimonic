@@ -26,18 +26,20 @@ define(['Kimo.Iterator', 'jquery'], function (Iterator, jQuery) {
             }
         }
 
-        TaskQueue.prototype.removeTask = function (task) {}
+        TaskQueue.prototype.removeTask = function (taskName) {
+            
+        }
 
         TaskQueue.prototype.process = function () {
             if (this.isProcessing) {
                 return false;
             }
-            this.isProcessing = true; 
-            var iterator = Iterator.create(this.tasksList);
+            this.isProcessing = true;
+            var taskIterator = Iterator.create(this.tasksList);
             this.intervalID = setInterval(function () {
                 try {
-                    if (iterator.hasNext()) {
-                        this.processingHandler(iterator.next());
+                    if (taskIterator.hasNext()) {
+                        this.processingHandler(taskIterator.next());
                     }
                 } catch(e) {
                     throw "ProcessException: " + e;
