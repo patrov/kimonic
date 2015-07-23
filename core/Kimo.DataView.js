@@ -34,9 +34,10 @@ define(["jquery", "Kimo.Observable", "nanoscroller"], function (jquery, Observab
                 var observableMixin = $.extend(true, {}, Observable);
                 $.extend(this, observableMixin);
                 this._settings = $.extend(true, this._settings, settings);
-                this.template = this._create();
+                this.template = this._createTemplate();
                 this.data = (typeof this._settings.data === "object") ? this._settings.data : {};
                 this.itemContainer = this.template.find(".itemcontainer").eq(0);
+                this.contentWrapper = this.template.find(".contentwrapper").eq(0);
                 this.itemRenderer = this._settings.itemRenderer;
                 this.headerZone = this. template.find(".datalist-header").eq(0);
                 this.toolbarContainer = this.template.find(this._settings.toolbarContainerClass).eq(0);
@@ -82,12 +83,13 @@ define(["jquery", "Kimo.Observable", "nanoscroller"], function (jquery, Observab
                         dataItem: self.getDataByHtml(e.currentTarget)
                     });
                 });
-                /* show scroll use nano scroller if available*/
-                /* $(this.itemContainer).bind("mouseenter",function(){
-         $(this).css("overflow-y","auto");
-         });
 
-         $(this.itemContainer).bind("mouseleave",function(){
+                /* show scroll use nano scroller if available*/
+                $(this.itemContainer).bind("mouseenter", function () {
+                    $(this).css("overflow-y","auto");
+                });
+
+        /* $(this.itemContainer).bind("mouseleave",function(){
          $(this).css("overflow-y","hidden");
          });*/
             };
@@ -162,7 +164,7 @@ define(["jquery", "Kimo.Observable", "nanoscroller"], function (jquery, Observab
                 return actionsWrapper.append($(actions));
             }
             /* dessine les éléments */
-            this._create = function () {
+            this._createTemplate = function () {
                 var template = $(_template).clone();
                 var css = {
                     width: this._settings.width,
@@ -179,6 +181,8 @@ define(["jquery", "Kimo.Observable", "nanoscroller"], function (jquery, Observab
                     css.maxHeight = this._settings.height;
                     /*compute here. item.size > maxHeight */
                 }
+
+                $(template).css({width: this._settings.width, height: this._settings.height});
 
                 $(template).find(this._settings.itemContainerClass).css({
                     "margin-top": "2px",
@@ -311,7 +315,11 @@ define(["jquery", "Kimo.Observable", "nanoscroller"], function (jquery, Observab
     }
     DataView.prototype.render = function (container) {
         this._draw(this.data);
-        $(container).html(this.template);        
+        $(container).html(this.template);
+        var self = this;
+        setTimeout(function () {
+            $(self.contentWrapper).nanoScroller({ flash: true });
+        }, 1000);
     }
     Kimo.DataView = DataView;
     return DataView;
