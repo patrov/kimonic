@@ -139,11 +139,11 @@ define(["Kimo.ActivityManager", "Kimo.Observable", "vendor.crossroads.main", "ve
             });
         }
 
-        Router.prototype.buildLink = function(path,params){
+        Router.prototype.buildLink = function (path, params) {
             var link = path;
             if($.isPlainObject(params)){
-                $.each(params,function(pattern,value){
-                    link = link.replace('{'+pattern+'}', value);
+                $.each(params, function (pattern, value) {
+                    link = link.replace('{' + pattern + '}', value);
                 });
             }
             return link;
@@ -156,15 +156,16 @@ define(["Kimo.ActivityManager", "Kimo.Observable", "vendor.crossroads.main", "ve
         Router.prototype.navigateTo = function(route, params, linkParams){
             try{
                 if(typeof route !=="string" || route.length ===0) throw "Route can't be null or empty!";
-                params = params || {};
+                params = params || {}; /*request*/
                 var routeInfos = this._routesCollection[route];
-                if(!routeInfos) throw "Route ["+route+"] Can't be found for ["+this._appName+"]";
-                if("url" in routeInfos){
+                if (!routeInfos) throw "Route ["+route+"] Can't be found for ["+this._appName+"]";
+                if ("url" in routeInfos) {
                     var cleanUrl = routeInfos.url.replace("#/","");
-                    if(linkParams){
-                        cleanUrl = this.buildLink(cleanUrl,linkParams);
-                        console.log(cleanUrl);
+                    linkParams = linkParams || routeInfos.defaultParams;
+                    if (!linkParams) {
+                      linkParams = routeInfos.defaultParams || false;  
                     }
+                    cleanUrl = this.buildLink(cleanUrl, linkParams);
                     /*save parameter */
                     this._parameterBags[cleanUrl] = params;
                     hasher.setHash(cleanUrl);
