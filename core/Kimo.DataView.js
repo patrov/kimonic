@@ -348,10 +348,12 @@ define(["jquery", "Kimo.Observable", "nanoscroller"], function (jquery, Observab
         $(container).html(this.template);
         var self = this;
         setTimeout(function () {
-            /*$(self.contentWrapper).nanoScroller({
+            $(self.contentWrapper).nanoScroller({
                 flash: true
-            });*/
-        }, 1000);
+            });
+        }, 200);
+        
+        /*use polyfile to hanel*/
     }
 
     Kimo.DataView = DataView;
