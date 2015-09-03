@@ -40,6 +40,10 @@ define(["jquery", "Kimo.Observable", "nanoscroller"], function (jquery, Observab
             this.contentWrapper = this.template.find(".contentwrapper").eq(0);
             this.itemRenderer = this._settings.itemRenderer;
             this.emptyItemRenderer = this._settings.emptyItemRenderer;
+            
+            if (typeof this.emptyItemRenderer !=="function") {
+                this.emptyItemRenderer = this._settings.emptyItemRenderer;
+            }
             this.headerZone = this. template.find(".datalist-header").eq(0);
             this.toolbarContainer = this.template.find(this._settings.toolbarContainerClass).eq(0);
             this._buildToolbar(this._settings.buttons);
@@ -240,14 +244,16 @@ define(["jquery", "Kimo.Observable", "nanoscroller"], function (jquery, Observab
         this._init(settings);
     }
 
-
+    DataView.prototype.emptyItemRenderer = function () {
+        return "";
+    }
+    
     DataView.prototype.updateMarkup = function () {
         var itemContainerHeight = $(this.itemContainer).height(),
         wrapperContainerHeight = $(this.contentWrapper).height();
         console.log(itemContainerHeight, wrapperContainerHeight);
         if (itemContainerHeight > wrapperContainerHeight) {
             //$(this.contentWrapper).nanoScroller();
-            alert("this is it");
         }
     }
 
@@ -256,7 +262,7 @@ define(["jquery", "Kimo.Observable", "nanoscroller"], function (jquery, Observab
         this.data = data;
         if (updateContent) {
             this.reset();
-            if(Array.isArray(data) && !data.length) {
+            if(Array.isArray(data) && data.length === 0) {
                 var render = this.emptyItemRenderer();
                 this.itemContainer.html($(render));
                 return;
