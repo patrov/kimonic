@@ -116,13 +116,28 @@ define(["Kimo.ActivityManager", "Kimo.Observable", "vendor.crossroads.main", "ve
                 }
                 if (typeof self._currentActivityInfos.instance[activityAction] === "function") {
                     var templateInfos = routeActions.join('.');
-                   require(['template!'+self._appName+'.'+templateInfos], function (template) {
-                       var tpl = $(template);
+                    
+                    var layoutDep = 'layout!' + self._appName + "." + routeActions[0];
+                    var useLayout = activityInfos.instance.useLayout;
+                    /* should be override by user */
+                    if (!useLayout) {
+                        layoutDep = 'layout!no-layout';
+                    }
+                    
+                   require(['template!' + self._appName + '.' + templateInfos, layoutDep], function (template, layout) {
+                       var tpl = $(template),
+                           layout = layout || $(layout);
                        
                     self._currentActivityInfos.instance.setLoadedTemplate(tpl);
                     var templateData = self._currentActivityInfos.instance[activityAction](params, self._parameterBags[cleanUrl]);
-                    var templateContent = Handlebars.compile($(tpl).get(0).outerHTML); // component shoulb be ready here
+                    var templateContent = Handlebars.compile($(tpl).get(0).outerHTML); // component should be ready here
                     var render = $(templateContent(templateData || {}));
+                    
+                    if (layout.length) {
+                        layout.find(".main-zone").eq(0).html(render); 
+                        render = layout;
+                    }
+                    
                     self._currentActivityInfos.instance.view.setContent(render);
                     self._currentActivityInfos.instance.triggerViewReady(render);
                    }, function () {

@@ -4,12 +4,16 @@ define([], function () {
         var pathInfos = name.split('.'),
             pos = pathInfos[1].search('Activity'),
             activityName = pathInfos[1].substring(0, pos);
-            return pathInfos[0].toLowerCase()+'/templates/'+activityName.toLowerCase()+'.'+pathInfos[2]+".html";
+            return pathInfos[0].toLowerCase()+'/templates/layouts/'+activityName.toLowerCase()+".html";
     };
     return {
 
-        load: function (actionName, req, onload, config) {
-                var templatePath = normalizeName(actionName),
+        load: function (layoutName, req, onload, config) {
+                if (layoutName === 'no-layout') {
+                    onload(null);
+                    return;
+                }
+                var templatePath = normalizeName(layoutName),
                     fullPath = 'text!'+config.baseUrl + 'apps/' + templatePath;
             req([fullPath], function (template) {
                 onload(template);

@@ -53,16 +53,15 @@ define(['Kimo.Iterator', 'jquery'], function (Iterator, jQuery) {
         }
 
         this.init.apply(this, arguments);
-    }
+    };
 
     return {
 
         create : function (settings) {
             var settings = settings || {};
             return new TaskQueue(settings);
-        },
+        }
 
-        instance : TaskQueue
-    }
+    };
 
 });
