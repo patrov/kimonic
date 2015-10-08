@@ -40,7 +40,7 @@ define(["jquery", "Kimo.Observable", "nanoscroller"], function (jquery, Observab
             this.contentWrapper = this.template.find(".contentwrapper").eq(0);
             this.itemRenderer = this._settings.itemRenderer;
             this.emptyItemRenderer = this._settings.emptyItemRenderer;
-            
+
             if (typeof this.emptyItemRenderer !=="function") {
                 this.emptyItemRenderer = this._settings.emptyItemRenderer;
             }
@@ -247,7 +247,7 @@ define(["jquery", "Kimo.Observable", "nanoscroller"], function (jquery, Observab
     DataView.prototype.emptyItemRenderer = function () {
         return "";
     }
-    
+
     DataView.prototype.updateMarkup = function () {
         var itemContainerHeight = $(this.itemContainer).height(),
         wrapperContainerHeight = $(this.contentWrapper).height();
@@ -358,7 +358,7 @@ define(["jquery", "Kimo.Observable", "nanoscroller"], function (jquery, Observab
                 flash: true
             });
         }, 200);
-        
+
         /*use polyfile to hanel*/
     }
 
