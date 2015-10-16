@@ -26,6 +26,7 @@ define(["jquery", "Kimo.Observable", "nanoscroller"], function (jquery, Observab
             height: 520,
             autoGrow: true,
             allowMultipleSelection: false,
+            scrollToLast: true,
             showHeader: true,
             showFooter: false,
             data: [] //data should be a repository
@@ -347,6 +348,10 @@ define(["jquery", "Kimo.Observable", "nanoscroller"], function (jquery, Observab
         if (action === "remove") {
             this.removeItem(item);
         }
+
+        if(this._settings.scrollToLast) {
+            $(this.contentWrapper).nanoScroller({scroll: 'bottom'});
+        }
     }
 
     DataView.prototype.render = function (container) {
@@ -359,7 +364,7 @@ define(["jquery", "Kimo.Observable", "nanoscroller"], function (jquery, Observab
             });
         }, 200);
 
-        /*use polyfile to hanel*/
+        /*use polyfile to handle*/
     }
 
     Kimo.DataView = DataView;
