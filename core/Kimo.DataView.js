@@ -308,10 +308,23 @@ define(["jquery", "Kimo.Observable", "nanoscroller"], function (jquery, Observab
         if (action === "remove") {
             this.removeItem(item);
         }
+
+        if(this._settings.scrollToLast) {
+            $(this.contentWrapper).nanoScroller({scroll: 'bottom'});
+        }
     }
     DataView.prototype.render = function (container) {
         this._draw(this.data);
-        $(container).html(this.template);        
+
+        $(container).html(this.template);
+        var self = this;
+        setTimeout(function () {
+            $(self.contentWrapper).nanoScroller({
+                flash: true
+            });
+        }, 200);
+
+        /*use polyfile to handle*/
     }
     Kimo.DataView = DataView;
     return DataView;
