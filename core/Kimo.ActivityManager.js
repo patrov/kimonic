@@ -30,12 +30,12 @@ define(["Kimo.Utils", "Kimo.Observable", "jquery", 'require'], function(Utils, O
             }
         }
         var _getRouter = function(appname) {
-   
+            var appname = appname;
             return function(activityName, params, apname) {
                 appname = apname || appname;
                 return _router.navigateTo(activityName, params, appname);
-            };
-        };
+            }
+        }
 
         var i = function() {
             this._init = function() {
@@ -154,6 +154,7 @@ define(["Kimo.Utils", "Kimo.Observable", "jquery", 'require'], function(Utils, O
             return _routes;
         }
 
+        /*main callback dispatch to activity...meaning... stop current activity/ start the activity holding the view */
 
         var _createActivity = function(l, j) {
 

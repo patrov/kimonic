@@ -32,7 +32,6 @@ Kimo.require = (function(r) {
             "component": "kimonic/component",
             "manager": "kimonic/manager",
             "template": "kimonic/template",
-            "layout": "kimonic/layout",
             "text": "kimonic/vendor/requirejs-text/text",
             "nanoscroller": "kimonic/vendor/nanoscroller/bin/javascripts/jquery.nanoscroller.min",
             "Kimo.ViewStack": "kimonic/core/Kimo.ViewStack",

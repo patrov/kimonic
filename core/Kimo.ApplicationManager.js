@@ -94,15 +94,15 @@ define(["Kimo.NavigationManager", "Kimo.ActivityManager", "Kimo.ViewStack" , "Ki
                 var currentRoute = window.location.hash;
 
                 /* Init Router and handle all the app routes */
-                var defaultRoute = d[i].getParam("route"); 
                 this.router = NavigationManager.init({
                     activitiesManager: ActivityManager,
                     viewManager: d[i].viewManager,
-                    appName: i
+                    appName: i,
+                    defaultOrErrorRoute: d[i].getParam("route")
                 });
                 d[i].viewManager.render(d[i].getParam("mainViewContainer"));
                 if (!currentRoute) {
-                    this.router.navigateTo(defaultRoute);
+                    this.router.navigateTo(d[i].getParam("route"));
                 }
                 NavigationManager.start();
             };

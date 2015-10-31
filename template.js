@@ -17,7 +17,7 @@ define([], function () {
                 onload.error(reason);
             });
         }
-    };
+    }
 
 
 

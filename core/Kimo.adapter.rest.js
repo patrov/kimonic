@@ -33,7 +33,6 @@ define(["Kimo.Utils","Kimo.ModelAdapter"], function(Utils, AdapterRegistry){
                     if(self.settings.envelope) {
                         response = response[self.settings.envelope];
                     }
-                    if(response.hasOwnProperty(model.getUid()))
                     model.setUid(response.uid);
                     if (typeof callbacks.success == "function") {
                         callbacks.success(response);

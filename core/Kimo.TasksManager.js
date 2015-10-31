@@ -26,20 +26,18 @@ define(['Kimo.Iterator', 'jquery'], function (Iterator, jQuery) {
             }
         }
 
-        TaskQueue.prototype.removeTask = function (taskName) {
-            
-        }
+        TaskQueue.prototype.removeTask = function (task) {}
 
         TaskQueue.prototype.process = function () {
             if (this.isProcessing) {
                 return false;
             }
-            this.isProcessing = true;
-            var taskIterator = Iterator.create(this.tasksList);
+            this.isProcessing = true; 
+            var iterator = Iterator.create(this.tasksList);
             this.intervalID = setInterval(function () {
                 try {
-                    if (taskIterator.hasNext()) {
-                        this.processingHandler(taskIterator.next());
+                    if (iterator.hasNext()) {
+                        this.processingHandler(iterator.next());
                     }
                 } catch(e) {
                     throw "ProcessException: " + e;
@@ -53,15 +51,16 @@ define(['Kimo.Iterator', 'jquery'], function (Iterator, jQuery) {
         }
 
         this.init.apply(this, arguments);
-    };
+    }
 
     return {
 
         create : function (settings) {
             var settings = settings || {};
             return new TaskQueue(settings);
-        }
+        },
 
-    };
+        instance : TaskQueue
+    }
 
 });
