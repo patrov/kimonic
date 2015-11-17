@@ -157,20 +157,22 @@ define(["Kimo.Observable", "jquery"], function(Observable, jQuery) {
                     this.trigger("change", "create", data);
                 return this.add(data, false, persist);
             },
-                    
+
             removeByCid: function(cid) {
                 var entity = this.entities[cid];
                 if (!entity) { throw "EntityCantBeFoundError"; }
-                    
+
                 return this.remove(entity);
             },
             remove: function(entity) {
                 entity = this.entities[entity._cid];
-                if (!entity)
+                if (!entity) {
                     throw "EntityCantBeFoundError";
+                }
+                
                 this.trigger("change", "remove", entity);
 
-                /* delete on success only*/
+                /* delete on success only */
                 delete(this.entities[entity._cid]);
                 return _adapter.invoke("remove", entity, this.getName(), {});
             },
