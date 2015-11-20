@@ -160,13 +160,8 @@ define(["Kimo.Observable", "jquery"], function(Observable, jQuery) {
 
             removeByCid: function(cid) {
                 var entity = this.entities[cid];
-<<<<<<< HEAD
-                if (!entity)
-                    throw "EntityCantBeFoundError";
-=======
                 if (!entity) { throw "EntityCantBeFoundError"; }
 
->>>>>>> 7936cceb67b75407a2419c533324357daec0d8d2
                 return this.remove(entity);
             },
             remove: function(entity) {
