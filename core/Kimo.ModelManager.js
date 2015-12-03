@@ -292,7 +292,7 @@ define(["Kimo.Observable", "jquery"], function(Observable, jQuery) {
             set: function(key, value, silent) {
                 silent = (typeof silent == "boolean") ? silent : false;
                 var changed = {};
-                if (typeof arguments[0] == "object") { //wrong
+                if (typeof arguments[0] == "object") { 
                     silent = arguments[1];
                     var settings = key;
                     for (var key in settings) {
@@ -371,6 +371,7 @@ define(["Kimo.Observable", "jquery"], function(Observable, jQuery) {
                 }
                 return _adapter.invoke("update", this, this.name, handlers); // move to persist return promise
             },
+			
             remove: function() {
                 var self = this;
                 var handlers = {

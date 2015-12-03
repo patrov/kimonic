@@ -19,7 +19,7 @@ define([], function() {
             });
             return def.promise();
         },
-        makeRequest :function(method, data,type) {
+        makeRequest :function(method, data, type) {
             var dfd = new $.Deferred();
             var params = {
                 jsonrpc: "2.0",
@@ -41,7 +41,7 @@ define([], function() {
                 dfd.reject(reason);
             }
             
-            $.ajax({
+            return $.ajax({
                 url: "/service/gateway.php",
                 data: JSON.stringify(params),
                 type: "POST",
@@ -49,16 +49,16 @@ define([], function() {
                 success: successCallback,
                 error: errorCallback
             });
-            return dfd.promise();
+            
         },
         
-        makeRestRequest :function(url,params) {
+        makeRestRequest: function(url, params) {
             var defaultParams = {
-                async:true, 
-                url:url, 
-                type:"GET"
+                async: true, 
+                url: url, 
+                type: "GET"
             };
-            defaultParams = $.extend(true,defaultParams,params); 
+            defaultParams = $.extend(true, defaultParams, params); 
             return $.ajax(defaultParams);
         }
     }

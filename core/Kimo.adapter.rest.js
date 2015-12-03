@@ -52,16 +52,19 @@ define(["Kimo.Utils","Kimo.ModelAdapter"], function(Utils, AdapterRegistry){
                     model: model.name,
                     data: model.toJson(true)
                 };
-
+				var self = this; 
                 return makeRestRequest(model.getPath() + "/"+parseInt(model.getUid()), {
                     type: "DELETE",
                     success: function(response) {
-                        if (typeof callbacks.success == "function") {
-                            callbacks.success(response.result);
+                        if (typeof callbacks.success === "function") {
+							if (self.settings.envelope) {
+								response = response[self.settings.envelope];
+							}
+                            callbacks.success(response);
                         }
                     },
                     error: function(response) {
-                        if (typeof callbacks.error == "function") {
+                        if (typeof callbacks.error === "function") {
                             callbacks.error(response);
                         }
                     }
@@ -76,7 +79,10 @@ define(["Kimo.Utils","Kimo.ModelAdapter"], function(Utils, AdapterRegistry){
                     type: "PUT",
                     success: function(response) {
                         if (typeof callbacks.success == "function") {
-                            callbacks.success(response.result);
+							if (self.settings.envelope) {
+							response = response[self.settings.envelope];
+							}		
+                            callbacks.success(response);
                         }
                     },
                     error: function(response) {
