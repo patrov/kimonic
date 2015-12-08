@@ -1,5 +1,5 @@
-define(["jquery", "Kimo.Observable", "nanoscroller"], function (jquery, Observable, nanoScroller) {
-    var $ = jquery, _template, _itemRenderer,
+define(["jquery", "Kimo.Observable", "nanoscroller"], function (jQuery, Observable, nanoScroller) {
+    var $ = jQuery, _template, _itemRenderer,
         DataView = function (settings) {
             _template = "<div class='kimo ui datalist'>"
                             +"<div class='datalist-header'>"
@@ -30,11 +30,14 @@ define(["jquery", "Kimo.Observable", "nanoscroller"], function (jquery, Observab
                 showFooter: false,
                 data: [] //data should be a repository
             };
+			
             this._init = function (settings) {
                 var observableMixin = $.extend(true, {}, Observable);
                 $.extend(this, observableMixin);
                 this._settings = $.extend(true, this._settings, settings);
+				this.id = Kimo.Utils.generateId("datalist");
                 this.template = this._create();
+
                 this.data = (typeof this._settings.data === "object") ? this._settings.data : {};
                 this.itemContainer = this.template.find(".itemcontainer").eq(0);
                 this.itemRenderer = this._settings.itemRenderer;
@@ -51,11 +54,14 @@ define(["jquery", "Kimo.Observable", "nanoscroller"], function (jquery, Observab
                 this.headerZone.hide();
                 this._bindEvents();
                 /* repository events */
-                this._bindRepositoryEvents();
             }
+			
+			
+			
             this._bindEvents = function () {
                 var self = this;
                 var itemClass = "." + this._settings.itemCls;
+				
                 $(this.itemContainer).delegate(itemClass, "click", function () {
                     $(self.selected).removeClass(self._settings.selectorCls);
                     $(this).addClass(self._settings.selectorCls);
@@ -70,32 +76,45 @@ define(["jquery", "Kimo.Observable", "nanoscroller"], function (jquery, Observab
                         data: self.selected
                     });
                 });
+				
                 $(this.itemContainer).delegate(itemClass, "mouseenter", function (e) {
                     self.trigger("mouseOnItem", {
                         data: e.currentTarget,
                         dataItem: self.getDataByHtml(e.currentTarget)
                     });
                 });
+				
                 $(this.itemContainer).delegate(itemClass, "mouseleave", function (e) {
                     self.trigger("mouseLeaveItem", {
                         data: e.currentTarget,
                         dataItem: self.getDataByHtml(e.currentTarget)
                     });
                 });
-                /* show scroll use nano scroller if available*/
-                /* $(this.itemContainer).bind("mouseenter",function(){
-         $(this).css("overflow-y","auto");
-         });
-
-         $(this.itemContainer).bind("mouseleave",function(){
-         $(this).css("overflow-y","hidden");
-         });*/
+				
+				/* Mutation observer */
+				this.observeRender();
             };
-            this._bindRepositoryEvents = function () {
-                /*  this.data.on("change",function(reason,entity){
-         });
-         */
-            };
+			
+			this.observeRender = function () {
+				if (!window.MutationObserver) { return false; }
+				var self = this,
+					mutation,
+					observer = new MutationObserver(function (mutations, observer) {
+					jQuery.each(mutations, function(i, mutation) {
+						mutation = mutations[i];
+						if (jQuery(mutation.target).find("#" + self.id).length) {
+							observer.disconnect();
+							return false;
+						}
+					});
+					
+				});
+				
+				observer.observe(jQuery('body').get(0), {childList: true, subtree: true});
+			}
+			
+			
+            
             this._buildToolbar = function (buttonInfos) {
                 var toolbars = document.createDocumentFragment();
                 for (var i in buttonInfos) {
@@ -169,25 +188,25 @@ define(["jquery", "Kimo.Observable", "nanoscroller"], function (jquery, Observab
                     height: this._settings.height,
                     overflow: "hidden"
                 };
+
+                $(template).attr("id", this.id);
+                
                 if(this._settings.maxHeight){
                     css.height = this._settings.maxHeight;
                 }
 
 
-                if (this._settings.autoGrow) {
-                    delete css.height;
-                    css.maxHeight = this._settings.height;
-                    /*compute here. item.size > maxHeight */
+                if (this._settings.autoGrow && this._settings.maxHeight) {
+                    css.maxHeight = this._settings.maxHeight;
                 }
 
                 $(template).find(this._settings.itemContainerClass).css({
                     "margin-top": "2px",
                     "margin-bottom": "2px"
-                   // width: "98%",
-                    //height: "99%"
                 });
 
                 $(template).css(css);
+				
                 if (this._settings.showFooter) {
                     $(template).find(".footer").css({
                         height: "30px",
@@ -313,16 +332,11 @@ define(["jquery", "Kimo.Observable", "nanoscroller"], function (jquery, Observab
             $(this.contentWrapper).nanoScroller({scroll: 'bottom'});
         }
     }
+	
     DataView.prototype.render = function (container) {
         this._draw(this.data);
-
         $(container).html(this.template);
-        var self = this;
-        setTimeout(function () {
-            $(self.contentWrapper).nanoScroller({
-                flash: true
-            });
-        }, 200);
+        
 
         /*use polyfile to handle*/
     }
