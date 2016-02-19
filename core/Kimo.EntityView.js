@@ -37,13 +37,17 @@ define(["jquery", "Kimo.Observable"], function (jquery, Observable) {
                 throw new Error("Kimo.EntityViewException. " + msg);
             }
         },
-
+        onDestroy: function () {},
+        
         render: function(){},
 
         toHtml: function(){},
 
-        destroy: function(){
-            $(this.root).remove();
+        destroy: function() {
+            if (typeof this.onDestroy === 'function') {
+                this.onDestroy();
+            }
+        this.trigger("destroy");
         }
     };
 
