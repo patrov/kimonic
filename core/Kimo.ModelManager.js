@@ -176,8 +176,10 @@ define(["Kimo.Observable", "jquery"], function(Observable, jQuery) {
                 delete(this.entities[entity._cid]);
                 return _adapter.invoke("remove", entity, this.getName(), {});
             },
+
             getName: function() {
-                return this.repositoryName;
+                prefix = (typeof this.prefix === 'string') ? this.prefix + ":" : "";
+                return prefix + this.repositoryName;
             },
 
             update: function() {
@@ -216,16 +218,17 @@ define(["Kimo.Observable", "jquery"], function(Observable, jQuery) {
             if (typeof userConfig.repositoryName !== "string")
                 throw "repositoryName must a string";
             var repositoryName = userConfig.repositoryName;
-            var mockFunc = function() {
+            var mockFunc = function(config) {
                 this.onCreate();
-                $.extend(this, userConfig);
-                var instance = ModelManagerApi.getRepository(this.repositoryName);
+                $.extend(this, userConfig, config);
+                console.log("radical", this.getName());
+                var instance = ModelManagerApi.getRepository(this.getName());
                 if (!instance) {
                     this.id = _generateId("repository");
                     if (typeof this.init === "function") {
                         this.init();
                     }
-                    _repositoriesCtn[this.repositoryName] = this;
+                    _repositoriesCtn[this.getName()] = this;
                 }
                 else {
                     return instance;
