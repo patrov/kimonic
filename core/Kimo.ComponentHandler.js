@@ -25,7 +25,7 @@ define(["require", "Kimo.Utils", "jquery" ,"Kimo.Observable"], function (require
         availableComponents = [{id:"", tagname:"page", instance: {}}],
 
 
-        /* keep instance, know when a component is ready it's ready
+        /* keep instance, know when a component is ready
          *
          * ComponentHandler.get("pager")
          * ComponentHandler.on("page:id", "selected", handler);

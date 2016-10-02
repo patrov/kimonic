@@ -11,6 +11,7 @@ define(["Kimo.ActivityManager", "Kimo.Observable", "vendor.crossroads.main", "ve
                 _currentActivityInfos = null,
                 _viewManager = null,
                 _router = null,
+                _appInstance = null,
                 _routeInfos = {};
 
         /**
@@ -21,6 +22,7 @@ define(["Kimo.ActivityManager", "Kimo.Observable", "vendor.crossroads.main", "ve
             _activityManager = _settings.activitiesManager || false;
             _viewManager = _settings.viewManager || false;
             _currentActivityInfos = _settings.currentActivityInfos;
+            _appInstance = _settings.appInstance;
             _router = new Router(_activityManager, _viewManager, _currentActivityInfos, _settings.appName);//oneRoute per application
             return _router;
         };
@@ -109,7 +111,6 @@ define(["Kimo.ActivityManager", "Kimo.Observable", "vendor.crossroads.main", "ve
                 self._currentActivityInfos = activityInfos;
                 var viewName = activityInfos.instance.view.name;
                 self._viewManager.gotoView(viewName);
-
                 /* execute actions */
 
                 var activityAction = routeActions[1] + "Action";
@@ -141,7 +142,10 @@ define(["Kimo.ActivityManager", "Kimo.Observable", "vendor.crossroads.main", "ve
                             layout.find(".main-zone").eq(0).html(render);
                             render = layout;
                         }
-
+                        if (!self._currentActivityInfos.instance.view.isRendered) {
+                            console.log(_appInstance.getParam("mainViewContainer"));
+                            self._currentActivityInfos.instance.viewManager.render(_appInstance.getParam("mainViewContainer"));
+                        }
                         self._currentActivityInfos.instance.view.setContent(render);
                         self._currentActivityInfos.instance.triggerViewReady(render);
                     }, function() {

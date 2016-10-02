@@ -163,8 +163,10 @@ define(['jquery'], function(jQuery) {
     ViewStack.prototype.render = function(container, append) {
         if (!jQuery(container).length) {
             throw "KimoViewStackException Container "+container+ " can't be found!";
-        }
+        }   
+            if(this.isRendered) { return false; }
             this.render = (append) ? $(container).append(this.template) : $(container).replaceWith(this.template);
+            this.isRendered = true;
     }
 
     ViewStack.prototype.selectView = function(viewname, content) {

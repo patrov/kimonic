@@ -98,12 +98,14 @@ define(["Kimo.NavigationManager", "Kimo.ActivityManager", "Kimo.ViewStack" , "Ki
                     activitiesManager: ActivityManager,
                     viewManager: d[i].viewManager,
                     appName: i,
+                    appInstance: d[i],
                     defaultOrErrorRoute: d[i].getParam("route")
                 });
-                d[i].viewManager.render(d[i].getParam("mainViewContainer"));
+                
                 if (!currentRoute) {
                     this.router.navigateTo(d[i].getParam("route"));
                 }
+                
                 NavigationManager.start();
             };
         var g = {
