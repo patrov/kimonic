@@ -4,9 +4,11 @@
  * 2. application
  **/
 var Kimo = Kimo || {};
+
 Kimo.require = (function(r) {
+    
     r.config({
-        baseUrl: appPath+"js/",
+        baseUrl: appPath,
         urlArgs: 'rand=' + Math.random(),
         catchError:true,
         paths: {

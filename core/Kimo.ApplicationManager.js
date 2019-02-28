@@ -78,6 +78,7 @@ define(["Kimo.NavigationManager", "Kimo.ActivityManager", "Kimo.ViewStack" , "Ki
                 if (typeof d[i] !== "function") {
                     throw new Error("An appname must be provided");
                 }
+               
                 d[i] = new d[i]();
                 var activity = d[i].getParam("mainActivity");
                 if (!activity) {
