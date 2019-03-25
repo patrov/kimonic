@@ -11,6 +11,7 @@ define([], function () {
             var infos = ActivityName.split(":"),
                 activityname = normalizeName(infos[1]),
                 fullPath = config.baseUrl + 'apps/' + infos[0].toLowerCase() +'/activities/'+ activityname+'.js';
+                console.log(`fullPath --> ${fullPath}!`)
             req([fullPath], function () {
                 onload({path: infos[0].toLowerCase()+'/activities/'+activityname+'.js'});
             }, function (reason) {
