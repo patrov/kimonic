@@ -1,4 +1,4 @@
-define(["Kimo.Utils","Kimo.ModelAdapter"], function(Utils, AdapterRegistry){
+define(["Kimo.Utils","Kimo.ModelAdapter"], function(Utils, AdapterRegistry) {
     var makeRestRequest = Utils.makeRestRequest;
     var restAdapter = {
         settings: {
@@ -30,9 +30,12 @@ define(["Kimo.Utils","Kimo.ModelAdapter"], function(Utils, AdapterRegistry){
                 data: data,
                 type: "POST",
                 success: function(response) {
-                    if(self.settings.envelope) {
+                    console.log(response)
+                    console.log(self.settings)
+                    if (self.settings.envelope) {
                         response = response[self.settings.envelope];
                     }
+                   
                     model.setUid(response.uid);
                     if (typeof callbacks.success == "function") {
                         callbacks.success(response);

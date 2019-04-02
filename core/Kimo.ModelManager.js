@@ -30,6 +30,7 @@ define(["Kimo.Observable", "jquery"], function(Observable, jQuery) {
 
         var AbstractRepository = {
             changeHistory: {},
+            
             onCreate: function() {
                 var mixin = $.extend(true, {}, Observable);
                 $.extend(this, mixin);
@@ -38,13 +39,16 @@ define(["Kimo.Observable", "jquery"], function(Observable, jQuery) {
                 this.model = null;
                 this._registerEvents(["change", "save", "remove", "create"]);
             },
+            
             findByCid: function(cid) {
                 cid = (typeof cid === "string") ? cid : 0;
                 return this.entities[cid];
             },
+            
             getPath: function() {
                 throw "getPath:NotImplementedYet";
             },
+
             findById: function(entityId) {
                 var resPromise = null;
                 var entity = this.entities[this.cidSidMap[entityId]];
@@ -58,6 +62,7 @@ define(["Kimo.Observable", "jquery"], function(Observable, jQuery) {
                 }
                 return resPromise;
             },
+
             findAll: function() {
                 var results = [];
                 for (var entity in this.entities) {
@@ -76,7 +81,7 @@ define(["Kimo.Observable", "jquery"], function(Observable, jQuery) {
                 return results;
             },
 
-            /*call is made via adapter*/
+            /* call is made via adapter */
             get: function(index) {
                 var compteur = 0;
                 for (var entity in this.entities) {
@@ -86,11 +91,9 @@ define(["Kimo.Observable", "jquery"], function(Observable, jQuery) {
                 }
             },
             /**
-             *call is made via adapter
-             *populate contents
-             *n'ajouter que les entités qui diffèrent
-             * isSync = false
-             *
+             * call is made via adapter
+             * populate contents
+             * n'ajouter que les entités qui diffèrent
              **/
             getAll: function(options) {
                 var def = new $.Deferred(),
@@ -113,6 +116,7 @@ define(["Kimo.Observable", "jquery"], function(Observable, jQuery) {
                 });
                 return def.promise();
             },
+
             _registerNewModel: function(modelData) {
                 var data = new this.model(modelData);
                 data._reftoRepository = this;
@@ -134,6 +138,7 @@ define(["Kimo.Observable", "jquery"], function(Observable, jQuery) {
                 }
                 return container;
             },
+
             find: function(entityId, callback) {
                 var promise = _adapter.find(this.getName(), entityId);
                 var self = this;
@@ -142,9 +147,13 @@ define(["Kimo.Observable", "jquery"], function(Observable, jQuery) {
                     var data = response.result;
                     var entity = self.create(data, false, false);
                     def.resolve(entity);
+                }).fail(() => {
+                    def.reject()
                 });
+
                 return def;
             },
+
             create: function(modelData, triggerEvents, persist) {
                 triggerEvents = (typeof triggerEvents === "boolean") ? triggerEvents : true;
                 persist = (typeof persist === "boolean") ? persist : true;
@@ -164,6 +173,7 @@ define(["Kimo.Observable", "jquery"], function(Observable, jQuery) {
 
                 return this.remove(entity);
             },
+
             remove: function(entity) {
                 entity = this.entities[entity._cid];
                 if (!entity) {
@@ -221,7 +231,6 @@ define(["Kimo.Observable", "jquery"], function(Observable, jQuery) {
             var mockFunc = function(config) {
                 this.onCreate();
                 $.extend(this, userConfig, config);
-                console.log("radical", this.getName());
                 var instance = ModelManagerApi.getRepository(this.getName());
                 if (!instance) {
                     this.id = _generateId("repository");
@@ -450,7 +459,7 @@ define(["Kimo.Observable", "jquery"], function(Observable, jQuery) {
             }
         }
 
-        return{
+        return {
             createRepository: _createRepository,
             createEntity: _createEntity,
             getRepository: _getRepositoryInstance,

@@ -1,5 +1,6 @@
 define([], function() {
     var Utils = {
+        
         generateId: (function() {
             var genPrefix = "Item_";
             var current = 0;
@@ -19,6 +20,7 @@ define([], function() {
             });
             return def.promise();
         },
+
         makeRequest :function(method, data, type) {
             var dfd = new $.Deferred();
             var params = {
